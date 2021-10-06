@@ -1,3 +1,4 @@
+import React from 'react';
 import PlaceCard from '../place-card/place-card';
 
 type PageMainProps = {
