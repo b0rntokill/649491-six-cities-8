@@ -1,7 +1,7 @@
 import React from 'react';
 import Logo from '../logo/logo';
 
-function FavoritesEmpty(): JSX.Element {
+function Error404(): JSX.Element {
   return (
     <div className="page page--favorites-empty">
       <header className="header">
@@ -35,8 +35,8 @@ function FavoritesEmpty(): JSX.Element {
           <section className="favorites favorites--empty">
             <h1 className="visually-hidden">Favorites (empty)</h1>
             <div className="favorites__status-wrapper">
-              <b className="favorites__status">Nothing yet saved.</b>
-              <p className="favorites__status-description">Save properties to narrow down search or plan your future trips.</p>
+              <b className="favorites__status">404 Not Found</b>
+              <a className="footer__logo-link" href="main.html">Go to main page</a>
             </div>
           </section>
         </div>
@@ -50,4 +50,4 @@ function FavoritesEmpty(): JSX.Element {
   );
 }
 
-export default FavoritesEmpty;
+export default Error404;

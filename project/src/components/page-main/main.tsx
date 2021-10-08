@@ -6,7 +6,7 @@ type PageMainProps = {
 };
 
 function Main({cardCount}: PageMainProps): JSX.Element {
-  const cardsRender: string[] = new Array(cardCount).fill('');
+  const cardsRender: number[] = Array.from({length:cardCount}, (v, k) => k);
 
   return (
     <div className="page page--gray page--main">
