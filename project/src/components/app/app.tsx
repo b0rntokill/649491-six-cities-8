@@ -1,5 +1,6 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, useHistory} from 'react-router-dom';
+import {useState} from 'react';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import Main from '../page-main/main';
 import Login from '../page-login/login';
@@ -7,18 +8,25 @@ import Favorites from '../page-favorites/favorites';
 import PlaceInfo from '../page-place-info/place-info';
 import Error404 from '../page-404/404';
 import PrivateRoute from '../private-route/private-route';
-
+import {Offers, Offer} from '../../types/offer';
 
 type AppProps = {
-  cardCount: number;
+  offers: Offers;
 };
 
-function App({cardCount}: AppProps): JSX.Element {
+function App({offers}: AppProps): JSX.Element {
+  const history = useHistory();
+  const [currentPlace, setCurrentPlace] = useState(offers[0]);
+
+  function updatePlaceInfo(value: Offer): void {
+    setCurrentPlace(value);
+  }
+
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path={AppRoute.Main}>
-          <Main cardCount={cardCount}/>
+          <Main offers={offers} updatePlaceInfo={updatePlaceInfo}/>
         </Route>
         <Route exact path={AppRoute.Login}>
           <Login/>
@@ -31,7 +39,7 @@ function App({cardCount}: AppProps): JSX.Element {
         >
         </PrivateRoute>
         <Route exact path={AppRoute.Place}>
-          <PlaceInfo/>
+          <PlaceInfo offer={currentPlace}/>
         </Route>
         <Route>
           <Error404/>

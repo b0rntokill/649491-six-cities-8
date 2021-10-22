@@ -1,12 +1,19 @@
 import React from 'react';
+import {useState} from 'react';
 import PlaceCard from '../place-card/place-card';
+import {Offers, Offer} from '../../types/offer';
 
 type PageMainProps = {
-  cardCount: number;
+  offers: Offers;
+  updatePlaceInfo: (value: Offer) => void;
 };
 
-function Main({cardCount}: PageMainProps): JSX.Element {
-  const cardsRender: number[] = Array.from({length:cardCount}, (v, k) => k);
+function Main({offers, updatePlaceInfo}: PageMainProps): JSX.Element {
+  const [activePlace, setActivePlace] = useState<number | null>(null);
+
+  function updateActivePlace(value: number | null): void {
+    setActivePlace(value);
+  }
 
   return (
     <div className="page page--gray page--main">
@@ -98,7 +105,9 @@ function Main({cardCount}: PageMainProps): JSX.Element {
               </form>
 
               <div className="cities__places-list places__list tabs__content">
-                {cardsRender.map(() => <PlaceCard key={`id-${Math.random()}`}/>)}
+                {offers.map((offer: Offer) =>
+                  <PlaceCard offer={offer} key={offer.id} updateActivePlace={updateActivePlace} activePlace={activePlace} updatePlaceInfo={updatePlaceInfo}/>)
+                }
               </div>
 
             </section>
