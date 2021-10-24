@@ -6,7 +6,8 @@ export const offers: Offers = [
   {
     id: 1,
     name: 'Beautiful & luxurious studio at great location',
-    premium: true,
+    isPremium: true,
+    isFavorite: true,
     images: [
       'img/apartment-01.jpg',
       'img/room.jpg',
@@ -42,7 +43,8 @@ export const offers: Offers = [
   {
     id: 2,
     name: 'Wood and stone place',
-    premium: false,
+    isPremium: false,
+    isFavorite: false,
     images: [
       'img/room.jpg',
       'img/apartment-01.jpg',
@@ -77,7 +79,8 @@ export const offers: Offers = [
   {
     id: 3,
     name: 'Canal View Prinsengracht',
-    premium: false,
+    isPremium: false,
+    isFavorite: true,
     images: [
       'img/apartment-02.jpg',
       'img/room.jpg',
@@ -112,7 +115,8 @@ export const offers: Offers = [
   {
     id: 4,
     name: 'Nice, cozy, warm big bed apartment',
-    premium: true,
+    isPremium: true,
+    isFavorite: false,
     images: [
       'img/apartment-03.jpg',
       'img/apartment-02.jpg',

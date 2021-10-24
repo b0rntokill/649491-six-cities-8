@@ -1,32 +1,34 @@
 import React from 'react';
 import {useState, FormEvent, ChangeEvent} from 'react';
-import {Review} from "../../../types/reviews";
 
 type ReviewsListProps = {
-  addReview: (value: Review) => void;
+  addReview: (text: string, rating: number) => void;
 };
 
 function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
   const MIN_CHARACTERS_REVIEW = 50;
   const MIN_RATING_REVIEW = 1;
+  const RATING_TO_PERCENT = 20;
+  const REPLACE_WHITESPACE = /\s+/g;
+
   const [text, setText] = useState('');
   const [rating, setRating] = useState(0);
   const [submitStatus, setSubmitStatus] = useState(false);
 
   function onTextChange(evt: ChangeEvent<HTMLTextAreaElement>): void {
-    const value = (evt.target.value).replace(/\s+/g,' ');
+    const value = (evt.target.value).replace(REPLACE_WHITESPACE, ' ');
     setText(value);
     checkFormForSubmit();
   }
 
   function onRatingChange(evt: ChangeEvent<HTMLInputElement>): void {
-    const value = Number(evt.target.value);
+    const value = Number(evt.target.value) * RATING_TO_PERCENT;
     setRating(value);
     checkFormForSubmit();
   }
 
   function checkFormForSubmit(): void {
-    const charactersCount = (text.trim().replace(/\s+/g,'')).length;
+    const charactersCount = (text.trim().replace(/\s+/g, '')).length;
 
     if (charactersCount >= MIN_CHARACTERS_REVIEW && rating >= MIN_RATING_REVIEW) {
       setSubmitStatus(true);
@@ -35,8 +37,18 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
     setSubmitStatus(false);
   }
 
+  function onFormSubmit(evt: FormEvent): void {
+    evt.preventDefault();
+    addReview(text, rating);
+  }
+
   return (
-    <form className="reviews__form form" action="#" method="post">
+    <form
+      className="reviews__form form"
+      action="#"
+      method="post"
+      onSubmit={onFormSubmit}
+    >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         <input className="form__rating-input visually-hidden" name="rating" value="5" id="5-stars" type="radio"
@@ -97,7 +109,8 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
           your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
         <button className="reviews__submit form__submit button" type="submit"
-                disabled={!submitStatus}>Submit</button>
+                disabled={!submitStatus}>Submit
+        </button>
       </div>
     </form>
   );

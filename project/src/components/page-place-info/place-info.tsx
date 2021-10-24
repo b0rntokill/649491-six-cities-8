@@ -10,7 +10,7 @@ type PagePlaceInfoProps = {
 };
 
 function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
-  const {name, images, premium, type, price, rating, bedrooms, capacity, conveniences, owner, descriptions, reviews} = offer;
+  const {name, images, isPremium, type, price, rating, bedrooms, capacity, conveniences, owner, descriptions, reviews} = offer;
 
   return (
     <main className="page__main page__main--property">
@@ -21,7 +21,7 @@ function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
         <div className="property__container container">
           <div className="property__wrapper">
 
-            {premium &&
+            {isPremium &&
             <div className="property__mark">
               <span>Premium</span>
             </div>}

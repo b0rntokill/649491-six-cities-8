@@ -4,7 +4,8 @@ import {Reviews} from "./reviews";
 export type Offer = {
   id: number,
   name: string,
-  premium: boolean,
+  isPremium: boolean,
+  isFavorite: boolean,
   images: string[],
   rating: string,
   type: string,

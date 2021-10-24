@@ -1,3 +1,6 @@
+export const DATE_LOCALES = 'en-US';
+export const DATE_OPTIONS: Intl.DateTimeFormatOptions = {year: 'numeric', month: 'long'};
+
 export enum AppRoute {
   Login = '/login',
   Main = '/',

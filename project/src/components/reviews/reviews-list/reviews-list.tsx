@@ -1,5 +1,6 @@
 import {Review} from '../../../types/reviews';
 import React from 'react';
+import {DATE_LOCALES, DATE_OPTIONS} from "../../../const";
 
 type ReviewsListProps = {
   review: Review;
@@ -26,7 +27,7 @@ function ReviewsList({review}: ReviewsListProps): JSX.Element {
             </div>
             <p className="reviews__text">{text}</p>
             <time className="reviews__time" dateTime={date}>{
-              new Date(date).toLocaleString('en-US', {year: 'numeric', month: 'long'})
+              new Date(date).toLocaleString(DATE_LOCALES, DATE_OPTIONS)
             }</time>
           </div>
         </li>

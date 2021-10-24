@@ -10,7 +10,7 @@ type PagePlaceCardProps = {
 };
 
 function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: PagePlaceCardProps): JSX.Element {
-  const {id, name, images, premium, type, price, rating} = offer;
+  const {id, name, images, isPremium, type, price, rating} = offer;
   const mainImage = images[0];
 
   return (
@@ -22,7 +22,7 @@ function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: Pag
       }}
     >
 
-      {premium &&
+      {isPremium &&
         <div className="place-card__mark">
           <span>Premium</span>
         </div>}

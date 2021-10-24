@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch, useHistory} from 'react-router-dom';
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {useState} from 'react';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import Main from '../page-main/main';
@@ -15,7 +15,6 @@ type AppProps = {
 };
 
 function App({offers}: AppProps): JSX.Element {
-  const history = useHistory();
   const [currentPlace, setCurrentPlace] = useState(offers[0]);
 
   function updatePlaceInfo(value: Offer): void {
