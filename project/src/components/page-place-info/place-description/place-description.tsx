@@ -7,9 +7,8 @@ type PlaceDescriptionsProps = {
 function PlaceDescriptions({descriptions}: PlaceDescriptionsProps): JSX.Element {
   return (
     <div className="property__description">
-      {descriptions.map((description: string, index) =>
-        <p className="property__text" key={index}>{description}</p>
-      )}
+      {descriptions.map((description: string) =>
+        <p className="property__text" key={Date.now()}>{description}</p>)}
     </div>
   );
 }

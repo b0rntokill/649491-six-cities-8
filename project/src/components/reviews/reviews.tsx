@@ -3,7 +3,7 @@ import React from 'react';
 import {useState} from 'react';
 import ReviewsList from './reviews-list/reviews-list';
 import ReviewsForm from './reviews-form/reviews-form';
-import {DATE_LOCALES, DATE_OPTIONS} from "../../const";
+import {DATE_LOCALES, DATE_OPTIONS} from '../../const';
 
 type ReviewsProps = {
   reviews: Reviews;
@@ -35,10 +35,9 @@ function ReviewsTemplate({reviews}: ReviewsProps): JSX.Element {
       <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsArr.length}</span></h2>
 
       {reviewsArr.map((review: Review) =>
-        <ReviewsList review={review} key={review.id}/>)
-      }
+        <ReviewsList review={review} key={review.id}/>)}
 
-    <ReviewsForm addReview={addReview}/>
+      <ReviewsForm addReview={addReview}/>
 
     </section>
   );

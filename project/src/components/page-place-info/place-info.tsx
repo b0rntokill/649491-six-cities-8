@@ -4,6 +4,7 @@ import PlaceConveniences from './place-conveniences/place-conveniences';
 import PlaceDescriptions from './place-description/place-description';
 import ReviewsTemplate from '../reviews/reviews';
 import {Offer} from '../../types/offer';
+import {MAX_RATING} from '../../const';
 
 type PagePlaceInfoProps = {
   offer: Offer;
@@ -11,12 +12,13 @@ type PagePlaceInfoProps = {
 
 function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
   const {name, images, isPremium, type, price, rating, bedrooms, capacity, conveniences, owner, descriptions, reviews} = offer;
+  const percentToRating = ((Number(rating) * MAX_RATING) / 100).toFixed(1);
 
   return (
     <main className="page__main page__main--property">
       <section className="property">
 
-      <PlaceGallery images={images}/>
+        <PlaceGallery images={images}/>
 
         <div className="property__container container">
           <div className="property__wrapper">
@@ -28,7 +30,7 @@ function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
 
             <div className="property__name-wrapper">
               <h1 className="property__name">{name}</h1>
-              <button className="property__bookmark-button button" type="button">
+              <button className={`property__bookmark-button button ${isPremium? 'property__bookmark-button--active' : ''}`} type="button">
                 <svg className="property__bookmark-icon" width="31" height="33">
                   <use xlinkHref="#icon-bookmark"></use>
                 </svg>
@@ -40,7 +42,7 @@ function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
                 <span style={{width: `${rating}%`}}></span>
                 <span className="visually-hidden">Rating</span>
               </div>
-              <span className="property__rating-value rating__value">4.8</span>
+              <span className="property__rating-value rating__value">{percentToRating}</span>
             </div>
             <ul className="property__features">
               <li className="property__feature property__feature--entire">{type}</li>
@@ -57,21 +59,19 @@ function PlaceInfo({offer}: PagePlaceInfoProps): JSX.Element {
             <div className="property__host">
               <h2 className="property__host-title">Meet the host</h2>
               <div className="property__host-user user">
-                <div className={
-                  `property__avatar-wrapper user__avatar-wrapper ${owner.status? 'property__avatar-wrapper--pro' : ''}`
-                }>
+                <div className={`property__avatar-wrapper user__avatar-wrapper ${owner.status? 'property__avatar-wrapper--pro' : ''}`}>
                   <img className="property__avatar user__avatar" src={owner.avatar} width="74" height="74" alt="Host avatar"/>
                 </div>
                 <span className="property__user-name">{`${owner.name} ${owner.surname ? owner.surname : ''}`}</span>
 
                 {owner.status &&
                 <span className="property__user-status">
-                    {owner.status}
+                  {owner.status}
                 </span>}
 
               </div>
-
-            <PlaceDescriptions descriptions={descriptions}/>
+s
+              <PlaceDescriptions descriptions={descriptions}/>
 
             </div>
 
