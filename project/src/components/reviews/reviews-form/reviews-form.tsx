@@ -15,8 +15,6 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
   const [rating, setRating] = useState(0);
   const [submitStatus, setSubmitStatus] = useState(false);
 
-  console.log(rating);
-
   function onTextChange(evt: ChangeEvent<HTMLTextAreaElement>): void {
     const value = (evt.target.value).replace(REPLACE_WHITESPACE, ' ');
     setText(value);
@@ -29,10 +27,10 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
     checkFormForSubmit(text, value);
   }
 
-  function checkFormForSubmit(text: string, rating: number): void {
-    const charactersCount = (text.trim().replace(/\s+/g, '')).length;
+  function checkFormForSubmit(txt: string, rat: number): void {
+    const charactersCount = (txt.trim().replace(/\s+/g, '')).length;
 
-    if (charactersCount >= MIN_CHARACTERS_REVIEW && rating >= MIN_RATING_REVIEW) {
+    if (charactersCount >= MIN_CHARACTERS_REVIEW && rat >= MIN_RATING_REVIEW) {
       setSubmitStatus(true);
       return;
     }

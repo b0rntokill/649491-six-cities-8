@@ -9,7 +9,7 @@ function PlaceGallery({images}: PlaceGalleryProps): JSX.Element {
     <div className="property__gallery-container container">
       <div className="property__gallery">
         {images.map((image: string) =>
-          <div className="property__image-wrapper" key={Date.now()}> <img className="property__image" src={image} alt="Photo studio"/></div>)}
+          <div className="property__image-wrapper" key={`${Date.now()}${image}`}> <img className="property__image" src={image} alt="Photo studio"/></div>)}
       </div>
     </div>
   );

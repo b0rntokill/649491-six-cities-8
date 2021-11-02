@@ -39,6 +39,19 @@ export const offers: Offers = [
     ],
     owner: users[0],
     reviews: [reviews[0]],
+    city: {
+      name: 'Amsterdam',
+      location: {
+        latitude: 52.370216,
+        longitude: 4.895168,
+        zoom: 10,
+      },
+    },
+    location: {
+      latitude: 52.3809553943508,
+      longitude: 4.939309666406198,
+      zoom: 8,
+    },
   },
   {
     id: 2,
@@ -75,6 +88,19 @@ export const offers: Offers = [
     ],
     owner: users[2],
     reviews: [reviews[1], reviews[2]],
+    city: {
+      name: 'Amsterdam',
+      location: {
+        latitude: 52.370216,
+        longitude: 4.895168,
+        zoom: 10,
+      },
+    },
+    location: {
+      latitude: 52.3909553943508,
+      longitude: 4.929309666406198,
+      zoom: 8,
+    },
   },
   {
     id: 3,
@@ -111,6 +137,19 @@ export const offers: Offers = [
     ],
     owner: users[1],
     reviews: [reviews[1], reviews[0], reviews[2]],
+    city: {
+      name: 'Amsterdam',
+      location: {
+        latitude: 52.370216,
+        longitude: 4.895168,
+        zoom: 10,
+      },
+    },
+    location: {
+      latitude: 52.369553943508,
+      longitude: 4.85309666406198,
+      zoom: 8,
+    },
   },
   {
     id: 4,
@@ -147,5 +186,18 @@ export const offers: Offers = [
     ],
     owner: users[4],
     reviews: [],
+    city: {
+      name: 'Amsterdam',
+      location: {
+        latitude: 52.370216,
+        longitude: 4.895168,
+        zoom: 10,
+      },
+    },
+    location: {
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
+      zoom: 8,
+    },
   },
 ];

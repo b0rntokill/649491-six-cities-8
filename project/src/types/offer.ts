@@ -1,5 +1,6 @@
-import {User} from "./users";
-import {Reviews} from "./reviews";
+import {User} from './users';
+import {Reviews} from './reviews';
+import {City, Location} from './map';
 
 export type Offer = {
   id: number,
@@ -16,6 +17,8 @@ export type Offer = {
   descriptions: string[],
   owner: User,
   reviews: Reviews,
+  city: City,
+  location: Location,
 };
 
 export type Offers = Offer[];

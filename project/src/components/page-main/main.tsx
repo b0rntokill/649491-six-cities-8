@@ -1,7 +1,10 @@
 import React from 'react';
-import Cities from './cities/cities';
-import CitiesEmpty from './cities/cities-empty';
+import {useState} from 'react';
+import Places from './places/places';
+import PlacesEmpty from './places/places-empty';
+import Map from '../map/map';
 import {Offers, Offer} from '../../types/offer';
+import {Points} from '../../types/map';
 
 type PageMainProps = {
   offers: Offers;
@@ -9,6 +12,19 @@ type PageMainProps = {
 };
 
 function Main({offers, updatePlaceInfo}: PageMainProps): JSX.Element {
+  const [activePlace, setActivePlace] = useState<number | null>(null);
+
+  function updateActivePlace(value: number | null): void {
+    setActivePlace(value);
+  }
+
+  const city = offers[0].city.location;
+  const points: Points = [];
+
+  offers.forEach((offer) => points.push({
+    id: offer.id,
+    location: offer.location,
+  }));
 
   return (
     <main className="page__main page__main--index">
@@ -49,9 +65,18 @@ function Main({offers, updatePlaceInfo}: PageMainProps): JSX.Element {
           </ul>
         </section>
       </div>
-      {offers.length?
-        <Cities offers={offers} updatePlaceInfo={updatePlaceInfo}/>
-        : <CitiesEmpty/>}
+      <div className="cities">
+        <div className="cities__places-container container">
+
+          {offers.length?
+            <Places offers={offers} updatePlaceInfo={updatePlaceInfo} activePlace={activePlace} updateActivePlace={updateActivePlace}/>
+            : <PlacesEmpty/>}
+
+          <div className="cities__right-section">
+            <Map city={city} points={points} activePlace={activePlace}/>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function CitiesEmpty(): JSX.Element {
+function PlacesEmpty(): JSX.Element {
   return (
     <div className="cities">
       <div className="cities__places-container cities__places-container--empty container">
@@ -16,4 +16,4 @@ function CitiesEmpty(): JSX.Element {
   );
 }
 
-export default CitiesEmpty;
+export default PlacesEmpty;
