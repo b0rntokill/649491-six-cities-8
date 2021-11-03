@@ -2,6 +2,8 @@ import {Offers} from '../types/offer';
 import {users} from './users';
 import {reviews} from './reviews';
 
+// export const offers: Offers = [];
+
 export const offers: Offers = [
   {
     id: 1,

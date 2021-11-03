@@ -34,8 +34,7 @@ function ReviewsTemplate({reviews}: ReviewsProps): JSX.Element {
     <section className="property__reviews reviews">
       <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsArr.length}</span></h2>
 
-      {reviewsArr.map((review: Review) =>
-        <ReviewsList review={review} key={review.id}/>)}
+      <ReviewsList reviews={reviewsArr}/>
 
       <ReviewsForm addReview={addReview}/>
 

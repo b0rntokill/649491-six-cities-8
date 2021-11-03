@@ -1,6 +1,6 @@
 import React from 'react';
 import {useRef, useEffect} from 'react';
-import useMap from '../../hooks/useMap';
+import useMap from '../../hooks/use-map';
 import {Location, Points} from '../../types/map';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -9,13 +9,15 @@ import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
 type MapProps = {
   city: Location;
-  points: Points;
+  points: Points | null;
   activePlace: number | null;
+  height: number;
 };
 
-function Map({city, points, activePlace}:MapProps) {
+function Map({city, points, activePlace, height}:MapProps) {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
+  const heightStr = `${height.toString()}px`;
 
   const defaultMarkerIcon = leaflet.icon({
     iconUrl: URL_MARKER_DEFAULT,
@@ -30,7 +32,7 @@ function Map({city, points, activePlace}:MapProps) {
   });
 
   useEffect(() => {
-    if (map) {
+    if (map && points) {
       points.forEach((point) => {
         leaflet
           .marker({
@@ -46,7 +48,7 @@ function Map({city, points, activePlace}:MapProps) {
 
   return(
     <section className="cities__map map"
-      style={{height: '823px'}}
+      style={{height: heightStr}}
       ref={mapRef}
     >
     </section>

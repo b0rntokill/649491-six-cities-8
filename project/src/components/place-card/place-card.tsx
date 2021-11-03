@@ -13,11 +13,13 @@ function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: Pag
   const {id, name, images, isPremium, type, price, rating} = offer;
   const mainImage = images[0];
 
+  console.log(activePlace);
+
   return (
     <article className="cities__place-card place-card"
       onMouseEnter={() => {
-        if (activePlace !== id) {
-          updateActivePlace(id);
+        if (activePlace !== offer.id) {
+          updateActivePlace(offer.id);
         }
       }}
     >
