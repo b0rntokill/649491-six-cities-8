@@ -17,21 +17,9 @@ type AppProps = {
 };
 
 function App({offers}: AppProps): JSX.Element {
-  const [currentPlace, setCurrentPlace] = useState<Offer | null>(null);
   const [activePlace, setActivePlace] = useState<number | null>(null);
-  const [nearPoints, setNearPoints] = useState<Offers | null>(null);
 
   const favoriteOffers = offers.filter((offer) => offer.isFavorite);
-
-  function searchNearPoint(value: Offer): void {
-   const nearPlaces: Offers = offers.filter((offer) => offer.id !== value.id);
-   setNearPoints(nearPlaces);
-  }
-
-  function updatePlaceInfo(value: Offer): void {
-    setCurrentPlace(value);
-    searchNearPoint(value);
-  }
 
   function updateActivePlace(value: number | null): void {
     setActivePlace(value);
@@ -42,7 +30,7 @@ function App({offers}: AppProps): JSX.Element {
       <Header/>
       <Switch>
         <Route exact path={AppRoute.Main}>
-          <Main offers={offers} updatePlaceInfo={updatePlaceInfo} activePlace={activePlace} updateActivePlace={updateActivePlace}/>
+          <Main offers={offers} activePlace={activePlace} updateActivePlace={updateActivePlace}/>
         </Route>
         <Route exact path={AppRoute.Login}>
           <Login/>
@@ -50,19 +38,16 @@ function App({offers}: AppProps): JSX.Element {
         <PrivateRoute
           exact
           path={AppRoute.Favorites}
-          render={() => <FavoritesMain favoriteOffers={favoriteOffers} updatePlaceInfo={updatePlaceInfo}/>}
+          render={() => <FavoritesMain favoriteOffers={favoriteOffers}/>}
           authorizationStatus={AuthorizationStatus.NoAuth}
         >
         </PrivateRoute>
         <Route exact path={AppRoute.Place}>
-          {currentPlace &&
-            <PlaceInfo
-              offer={currentPlace}
-              nearPoints={nearPoints}
-              updatePlaceInfo={updatePlaceInfo}
-              activePlace={activePlace}
-              updateActivePlace={updateActivePlace}
-            />}
+          <PlaceInfo
+            offers={offers}
+            activePlace={activePlace}
+            updateActivePlace={updateActivePlace}
+          />
         </Route>
         <Route>
           <Error404/>

@@ -2,7 +2,7 @@ import React from 'react';
 import {useRef, useEffect} from 'react';
 import useMap from '../../hooks/use-map';
 import {Location, Points} from '../../types/map';
-import leaflet from 'leaflet';
+import leaflet, {Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 
@@ -33,18 +33,24 @@ function Map({city, points, activePlace, height}:MapProps) {
 
   useEffect(() => {
     if (map && points) {
-      points.forEach((point) => {
-        leaflet
+      const markers: Marker<unknown>[] = points.map((point) => {
+        return leaflet
           .marker({
             lat: point.location.latitude,
             lng: point.location.longitude,
           }, {
             icon: (activePlace === point.id)? currentMarkerIcon : defaultMarkerIcon,
           })
-          .addTo(map);
       });
-    }
-  },[map, points]);
+
+      markers.forEach(marker => marker.addTo(map));
+
+      return(()=> {
+        markers.forEach(marker => marker.removeFrom(map));
+      })
+    };
+
+  },[map, points, activePlace]);
 
   return(
     <section className="cities__map map"

@@ -6,10 +6,9 @@ type PagePlaceCardProps = {
   offer: Offer;
   updateActivePlace: (value: number | null) => void;
   activePlace: number | null;
-  updatePlaceInfo: (value: Offer) => void;
 };
 
-function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: PagePlaceCardProps): JSX.Element {
+function PlaceCard({offer, updateActivePlace, activePlace}: PagePlaceCardProps): JSX.Element {
   const {id, name, images, isPremium, type, price, rating} = offer;
   const mainImage = images[0];
 
@@ -32,9 +31,6 @@ function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: Pag
       <div className="cities__image-wrapper place-card__image-wrapper">
         <Link
           to={`/offer/${id}`}
-          onClick={() => {
-            updatePlaceInfo(offer);
-          }}
         >
           <img className="place-card__image" src={mainImage} width="260" height="200" alt={name}/>
         </Link>
@@ -61,9 +57,6 @@ function PlaceCard({offer, updateActivePlace, activePlace, updatePlaceInfo}: Pag
         <h2 className="place-card__name">
           <Link
             to={`/offer/${id}`}
-            onClick={() => {
-              updatePlaceInfo(offer);
-            }}
           >
             {name}
           </Link>

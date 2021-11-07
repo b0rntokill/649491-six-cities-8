@@ -8,11 +8,10 @@ import {Points, Location} from '../../types/map';
 type PageMainProps = {
   offers: Offers;
   activePlace: number | null;
-  updatePlaceInfo: (value: Offer) => void;
   updateActivePlace: (value: number | null) => void;
 };
 
-function Main({offers, updatePlaceInfo, updateActivePlace, activePlace}: PageMainProps): JSX.Element {
+function Main({offers, updateActivePlace, activePlace}: PageMainProps): JSX.Element {
   const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
   let city: Location | null = null;
   const points: Points = [];
@@ -91,7 +90,6 @@ function Main({offers, updatePlaceInfo, updateActivePlace, activePlace}: PageMai
           {offers.length?
             <Places
               offers={offers}
-              updatePlaceInfo={updatePlaceInfo}
               activePlace={activePlace}
               updateActivePlace={updateActivePlace}
               pageClass={'cities__places-list'}

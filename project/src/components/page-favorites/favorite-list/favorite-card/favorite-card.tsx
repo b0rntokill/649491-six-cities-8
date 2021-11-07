@@ -4,10 +4,9 @@ import {Link} from 'react-router-dom';
 
 type FavoriteCardProps = {
   offer: Offer;
-  updatePlaceInfo: (value: Offer) => void;
 };
 
-function FavoriteCard({offer, updatePlaceInfo}: FavoriteCardProps): JSX.Element {
+function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
   const {id, name, images, type, price, rating} = offer;
   const mainImage = images[0];
 
@@ -16,9 +15,6 @@ function FavoriteCard({offer, updatePlaceInfo}: FavoriteCardProps): JSX.Element 
       <div className="favorites__image-wrapper place-card__image-wrapper">
         <Link
           to={`/offer/${id}`}
-          onClick={() => {
-            updatePlaceInfo(offer);
-          }}
         >
           <img className="place-card__image" src={mainImage} width="150" height="110" alt={name}/>
         </Link>
@@ -45,9 +41,6 @@ function FavoriteCard({offer, updatePlaceInfo}: FavoriteCardProps): JSX.Element 
         <h2 className="place-card__name">
           <Link
             to={`/offer/${id}`}
-            onClick={() => {
-              updatePlaceInfo(offer);
-            }}
           >
             {name}
           </Link>

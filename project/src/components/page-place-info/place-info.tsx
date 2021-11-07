@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router';
 import PlaceGallery from './place-gallery/place-gallery';
 import PlaceConveniences from './place-conveniences/place-conveniences';
 import PlaceDescriptions from './place-description/place-description';
@@ -8,29 +9,41 @@ import Places from '../places/places';
 import {Offer, Offers} from '../../types/offer';
 import {Points} from '../../types/map';
 import {MAX_RATING} from '../../const';
-
+import Error404 from '../page-404/404';
 
 type PagePlaceInfoProps = {
-  offer: Offer;
-  nearPoints: Offers | null;
+  offers: Offers;
   activePlace: number | null;
-  updatePlaceInfo: (value: Offer) => void;
   updateActivePlace: (value: number | null) => void;
 };
 
-function PlaceInfo({offer, nearPoints, activePlace, updateActivePlace, updatePlaceInfo}: PagePlaceInfoProps): JSX.Element {
+function PlaceInfo({offers, activePlace, updateActivePlace}: PagePlaceInfoProps): JSX.Element {
+  const {id} = useParams<{id: string}>();
+  const [offer, setOffer] = useState<Offer>();
+  const [nearPoints, setNearPoints] = useState<Offers | null>(null);
+
+  useEffect(() => {
+    setOffer(offers.find(offer => offer.id === Number(id)))
+    const points: Points = [];
+    const nearPlaces: Offers = offers.filter((value) => Number(id) !== value.id);
+    if (nearPlaces) {
+      nearPlaces.forEach((offer) => points.push({
+        id: offer.id,
+        location: offer.location,
+      }));
+      setNearPoints(nearPlaces);
+    }
+  }, [id])
+
+  if (!offer) {
+    return (
+      <Error404/>
+    );
+  }
+
   const {name, images, isPremium, type, price, rating, bedrooms, capacity, conveniences, owner, descriptions, reviews} = offer;
   const city = offer.city.location;
   const percentToRating = ((Number(rating) * MAX_RATING) / 100).toFixed(1);
-
-  const points: Points = [];
-
-  if (nearPoints) {
-    nearPoints.forEach((offer) => points.push({
-      id: offer.id,
-      location: offer.location,
-    }));
-  }
 
   return (
     <main className="page__main page__main--property">
@@ -98,7 +111,7 @@ function PlaceInfo({offer, nearPoints, activePlace, updateActivePlace, updatePla
           </div>
         </div>
         {nearPoints && <section className="property__map map">
-          <Map city={city} points={points} activePlace={activePlace} height={579}/>
+          <Map city={city} points={nearPoints} activePlace={activePlace} height={579}/>
         </section>}
       </section>
 
@@ -107,7 +120,6 @@ function PlaceInfo({offer, nearPoints, activePlace, updateActivePlace, updatePla
         {nearPoints?
           <Places
             offers={nearPoints}
-            updatePlaceInfo={updatePlaceInfo}
             activePlace={activePlace}
             updateActivePlace={updateActivePlace}
             pageClass={'near-places__list'}

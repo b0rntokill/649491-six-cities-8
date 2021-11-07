@@ -4,10 +4,9 @@ import {Offer, Offers} from '../../../types/offer';
 
 type FavoriteListProps = {
   offers: Offers;
-  updatePlaceInfo: (value: Offer) => void;
 };
 
-function FavoriteList({offers, updatePlaceInfo}: FavoriteListProps): JSX.Element {
+function FavoriteList({offers}: FavoriteListProps): JSX.Element {
   return (
     <li className="favorites__locations-items">
       <div className="favorites__locations locations locations--current">
@@ -19,7 +18,7 @@ function FavoriteList({offers, updatePlaceInfo}: FavoriteListProps): JSX.Element
       </div>
       <div className="favorites__places">
         {offers.map((offer: Offer) =>
-          <FavoriteCard offer={offer} key={offer.id} updatePlaceInfo={updatePlaceInfo}/>)}
+          <FavoriteCard offer={offer} key={offer.id}/>)}
       </div>
     </li>
   );
