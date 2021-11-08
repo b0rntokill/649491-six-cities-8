@@ -1,6 +1,6 @@
 import React from 'react';
 import FavoriteList from '../favorite-list/favorite-list';
-import {Offers, Offer} from '../../../types/offer';
+import {Offers} from '../../../types/offer';
 
 type PageFavoriteProps = {
   favoriteOffers: Offers;

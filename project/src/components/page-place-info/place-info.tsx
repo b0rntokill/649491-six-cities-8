@@ -10,20 +10,30 @@ import {Offer, Offers} from '../../types/offer';
 import {Points} from '../../types/map';
 import {MAX_RATING} from '../../const';
 import Error404 from '../page-404/404';
+import {State} from '../../types/state';
+import {connect, ConnectedProps} from 'react-redux';
 
 type PagePlaceInfoProps = {
   offers: Offers;
-  activePlace: number | null;
-  updateActivePlace: (value: number | null) => void;
 };
 
-function PlaceInfo({offers, activePlace, updateActivePlace}: PagePlaceInfoProps): JSX.Element {
+const mapStateToProps = ({offers}: State) => ({
+  offers,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & PagePlaceInfoProps;
+
+function PlaceInfo(props: ConnectedComponentProps): JSX.Element {
+  const {offers} = props;
   const {id} = useParams<{id: string}>();
   const [offer, setOffer] = useState<Offer>();
   const [nearPoints, setNearPoints] = useState<Offers | null>(null);
 
   useEffect(() => {
-    setOffer(offers.find(offer => offer.id === Number(id)))
+    setOffer(offers.find((offer) => offer.id === Number(id)));
     const points: Points = [];
     const nearPlaces: Offers = offers.filter((value) => Number(id) !== value.id);
     if (nearPlaces) {
@@ -33,7 +43,7 @@ function PlaceInfo({offers, activePlace, updateActivePlace}: PagePlaceInfoProps)
       }));
       setNearPoints(nearPlaces);
     }
-  }, [id])
+  }, [id]);
 
   if (!offer) {
     return (
@@ -110,8 +120,9 @@ function PlaceInfo({offers, activePlace, updateActivePlace}: PagePlaceInfoProps)
 
           </div>
         </div>
-        {nearPoints && <section className="property__map map">
-          <Map city={city} points={nearPoints} activePlace={activePlace} height={579}/>
+        {nearPoints &&
+        <section className="property__map map">
+          <Map city={city} points={nearPoints} height={579}/>
         </section>}
       </section>
 
@@ -119,15 +130,13 @@ function PlaceInfo({offers, activePlace, updateActivePlace}: PagePlaceInfoProps)
         <h2 className="near-places__title">Other places in the neighbourhood</h2>
         {nearPoints?
           <Places
-            offers={nearPoints}
-            activePlace={activePlace}
-            updateActivePlace={updateActivePlace}
-            pageClass={'near-places__list'}
+            offers={nearPoints} pageClass={'near-places__list'}
           /> :
-          <p className={"text-center font-20"}>Sorry! No near places to stay available</p>}
+          <p className={'text-center font-20'}>Sorry! No near places to stay available</p>}
       </div>
     </main>
   );
 }
 
-export default PlaceInfo;
+export {PlaceInfo};
+export default connector(PlaceInfo);

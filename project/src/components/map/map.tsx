@@ -1,20 +1,30 @@
 import React from 'react';
 import {useRef, useEffect} from 'react';
 import useMap from '../../hooks/use-map';
+import {connect, ConnectedProps} from 'react-redux';
 import {Location, Points} from '../../types/map';
 import leaflet, {Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
-
+import {State} from '../../types/state';
 
 type MapProps = {
   city: Location;
   points: Points | null;
-  activePlace: number | null;
   height: number;
 };
 
-function Map({city, points, activePlace, height}:MapProps) {
+const mapStateToProps = ({activePlace}: State) => ({
+  activePlace,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & MapProps;
+
+function Map(props: ConnectedComponentProps) {
+  const {city, points, height, activePlace} = props;
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
   const heightStr = `${height.toString()}px`;
@@ -40,15 +50,17 @@ function Map({city, points, activePlace, height}:MapProps) {
             lng: point.location.longitude,
           }, {
             icon: (activePlace === point.id)? currentMarkerIcon : defaultMarkerIcon,
-          })
+          });
       });
 
-      markers.forEach(marker => marker.addTo(map));
+      markers.forEach((marker) => marker.addTo(map));
+
+      map.flyTo({lat: city.latitude, lng: city.longitude});
 
       return(()=> {
-        markers.forEach(marker => marker.removeFrom(map));
-      })
-    };
+        markers.forEach((marker) => marker.removeFrom(map));
+      });
+    }
 
   },[map, points, activePlace]);
 
@@ -61,4 +73,6 @@ function Map({city, points, activePlace, height}:MapProps) {
   );
 }
 
-export default Map;
+export {Map};
+export default connector(Map);
+

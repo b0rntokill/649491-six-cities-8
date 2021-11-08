@@ -1,24 +1,41 @@
 import React from 'react';
+import {Dispatch} from 'redux';
+import {connect, ConnectedProps} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {Offer} from '../../types/offer';
+import {State} from '../../types/state';
+import {Actions} from '../../types/actions';
+import {activePlace} from '../../store/action';
 
 type PagePlaceCardProps = {
   offer: Offer;
-  updateActivePlace: (value: number | null) => void;
-  activePlace: number | null;
 };
 
-function PlaceCard({offer, updateActivePlace, activePlace}: PagePlaceCardProps): JSX.Element {
+const mapStateToProps = ({activePlace}: State) => ({
+  activePlace,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  onMouseEnterPlace(id: number | null) {
+    dispatch(activePlace(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & PagePlaceCardProps;
+
+function PlaceCard(props: ConnectedComponentProps): JSX.Element {
+  const {offer, activePlace, onMouseEnterPlace} = props;
   const {id, name, images, isPremium, type, price, rating} = offer;
   const mainImage = images[0];
-
-  console.log(activePlace);
 
   return (
     <article className="cities__place-card place-card"
       onMouseEnter={() => {
         if (activePlace !== offer.id) {
-          updateActivePlace(offer.id);
+          onMouseEnterPlace(offer.id);
         }
       }}
     >
@@ -67,4 +84,5 @@ function PlaceCard({offer, updateActivePlace, activePlace}: PagePlaceCardProps):
   );
 }
 
-export default PlaceCard;
+export {PlaceCard};
+export default connector(PlaceCard);

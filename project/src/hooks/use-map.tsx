@@ -30,7 +30,7 @@ function useMap(
 
       setMap(instanceMap);
     }
-  }, [mapRef, map, city]);
+  }, [mapRef, map]);
 
   return map;
 }
