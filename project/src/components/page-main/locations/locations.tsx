@@ -6,10 +6,6 @@ import {Dispatch} from 'redux';
 import {Actions} from '../../../types/actions';
 import {setSelectCity} from '../../../store/action';
 
-type LocationsProps = {
-  selectedCity: string;
-};
-
 const mapStateToProps = ({selectedCity}: State) => ({
   selectedCity,
 });
@@ -23,9 +19,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & LocationsProps;
 
-function Locations(props: ConnectedComponentProps): JSX.Element {
+function Locations(props: PropsFromRedux): JSX.Element {
   const {selectedCity, onClickCity} = props;
 
   return (

@@ -2,13 +2,8 @@ import React from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import Favorites from './favorites/favorites';
 import FavoritesEmpty from './favorites/favorites-empty';
-import {Offer, Offers} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import {State} from '../../types/state';
-
-
-type PageFavoriteMainProps = {
-  offers: Offers;
-};
 
 const mapStateToProps = ({offers}: State) => ({
   offers,
@@ -17,9 +12,8 @@ const mapStateToProps = ({offers}: State) => ({
 const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & PageFavoriteMainProps;
 
-function FavoritesMain(props: ConnectedComponentProps): JSX.Element {
+function FavoritesMain(props: PropsFromRedux): JSX.Element {
   const {offers} = props;
   const favoriteOffers = offers.filter((offer: Offer) => offer.isFavorite);
 

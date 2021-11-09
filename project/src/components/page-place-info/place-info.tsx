@@ -13,10 +13,6 @@ import Error404 from '../page-404/404';
 import {State} from '../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
 
-type PagePlaceInfoProps = {
-  offers: Offers;
-};
-
 const mapStateToProps = ({offers}: State) => ({
   offers,
 });
@@ -24,9 +20,8 @@ const mapStateToProps = ({offers}: State) => ({
 const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & PagePlaceInfoProps;
 
-function PlaceInfo(props: ConnectedComponentProps): JSX.Element {
+function PlaceInfo(props: PropsFromRedux): JSX.Element {
   const {offers} = props;
   const {id} = useParams<{id: string}>();
   const [offer, setOffer] = useState<Offer | undefined>(undefined);

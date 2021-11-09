@@ -4,13 +4,9 @@ import Places from '../places/places';
 import PlacesEmpty from '../places/places-empty';
 import Locations from './locations/locations';
 import Map from '../map/map';
-import {Offer, Offers} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import {Points, Location} from '../../types/map';
 import {State} from '../../types/state';
-
-type PageMainProps = {
-  offers: Offers;
-};
 
 const mapStateToProps = ({selectedCity, offers}: State) => ({
   offers,
@@ -20,9 +16,8 @@ const mapStateToProps = ({selectedCity, offers}: State) => ({
 const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & PageMainProps;
 
-function Main(props: ConnectedComponentProps): JSX.Element {
+function Main(props: PropsFromRedux): JSX.Element {
   const {selectedCity, offers} = props;
   const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
   const selectedOffers = offers.filter((offer: Offer) => offer.city.name === selectedCity);
