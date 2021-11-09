@@ -1,12 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import Places from '../places/places';
 import PlacesEmpty from '../places/places-empty';
+import SortingOptions from './sorting-options/sorting-options';
 import Locations from './locations/locations';
 import Map from '../map/map';
-import {Offer} from '../../types/offer';
+import {Offer, Offers} from '../../types/offer';
 import {Points, Location} from '../../types/map';
 import {State} from '../../types/state';
+import {DEFAULT_SORT_TYPE} from '../../const';
 
 const mapStateToProps = ({selectedCity, offers}: State) => ({
   offers,
@@ -19,23 +21,45 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Main(props: PropsFromRedux): JSX.Element {
   const {selectedCity, offers} = props;
+  const [sortType, setSortType] = useState<string>(DEFAULT_SORT_TYPE);
+
+  const updateSortType = (type: string): void => {
+    setSortType(type);
+  };
+
   const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
-  const selectedOffers = offers.filter((offer: Offer) => offer.city.name === selectedCity);
+
+  const selectedCityOffers = offers.filter((offer: Offer) => offer.city.name === selectedCity);
+
+  const getSortOffers = (type: string, places: Offers) => {
+    switch (type) {
+      case 'Price: low to high':
+        return places.slice().sort((a, b) => a.price - b.price);
+      case 'Price: high to low':
+        return places.slice().sort((a, b) => b.price - a.price);
+      case 'Top rated first':
+        return places.slice().sort((a, b) => Number(b.rating) -  Number(a.price));
+      default:
+        return places;
+    }
+  };
+
+  const selectedSortOffers = getSortOffers(sortType, selectedCityOffers);
 
   let city: Location | null = null;
   const points: Points = [];
 
-  if (selectedOffers.length) {
-    city = selectedOffers[0].city.location;
+  if (selectedCityOffers.length) {
+    city = selectedCityOffers[0].city.location;
 
-    selectedOffers.forEach((offer) => points.push({
+    selectedCityOffers.forEach((offer) => points.push({
       id: offer.id,
       location: offer.location,
     }));
   }
 
   return (
-    <main className={`page__main page__main--index ${selectedOffers? EMPTY_OFFERS_CLASS : ''}`}>
+    <main className={`page__main page__main--index ${selectedCityOffers? EMPTY_OFFERS_CLASS : ''}`}>
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
         <Locations/>
@@ -45,27 +69,13 @@ function Main(props: PropsFromRedux): JSX.Element {
 
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
-            <b className="places__found">{selectedOffers.length} places to stay in {selectedCity}</b>
+            <b className="places__found">{selectedCityOffers.length} places to stay in {selectedCity}</b>
 
-            <form className="places__sorting" action="#" method="get">
-              <span className="places__sorting-caption">Sort by</span>
-              <span className="places__sorting-type" tabIndex={0}>
-                Popular
-                <svg className="places__sorting-arrow" width="7" height="4">
-                  <use xlinkHref="#icon-arrow-select"></use>
-                </svg>
-              </span>
-              <ul className="places__options places__options--custom places__options--opened">
-                <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                <li className="places__option" tabIndex={0}>Price: low to high</li>
-                <li className="places__option" tabIndex={0}>Price: high to low</li>
-                <li className="places__option" tabIndex={0}>Top rated first</li>
-              </ul>
-            </form>
+            <SortingOptions sortType={sortType} updateSortType={updateSortType}/>
 
-            {selectedOffers.length?
+            {selectedSortOffers.length?
               <Places
-                offers={selectedOffers} pageClass={'cities__places-list'}
+                offers={selectedSortOffers} pageClass={'cities__places-list'}
               />
               : <PlacesEmpty/>}
           </section>

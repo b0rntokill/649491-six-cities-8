@@ -29,7 +29,6 @@ function PlaceInfo(props: PropsFromRedux): JSX.Element {
 
   useEffect(() => {
     setOffer(offers.find((place) => place.id === Number(id)));
-
   }, [id]);
 
   useEffect(() => {

@@ -28,7 +28,7 @@ function Locations(props: PropsFromRedux): JSX.Element {
       <ul className="locations__list tabs__list">
         {CITY_LIST.map((city: string) => (
           <li className="locations__item" key={city}>
-            <a className="locations__item-link tabs__item"
+            <a className={`locations__item-link tabs__item ${selectedCity === city? 'tabs__item--active' : ''}`}
               href="#"
               id={city}
               onClick={(evt) => {

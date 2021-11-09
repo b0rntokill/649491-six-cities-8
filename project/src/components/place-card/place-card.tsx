@@ -38,6 +38,9 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
           onMouseEnterPlace(offer.id);
         }
       }}
+      onMouseLeave={() => {
+        onMouseEnterPlace(null);
+      }}
     >
 
       {isPremium &&
