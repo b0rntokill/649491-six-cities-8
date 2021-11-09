@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import {Offer} from '../../types/offer';
 import {State} from '../../types/state';
 import {Actions} from '../../types/actions';
-import {activePlace} from '../../store/action';
+import {setActivePlace} from '../../store/action';
 
 type PagePlaceCardProps = {
   offer: Offer;
@@ -17,7 +17,7 @@ const mapStateToProps = ({activePlace}: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   onMouseEnterPlace(id: number | null) {
-    dispatch(activePlace(id));
+    dispatch(setActivePlace(id));
   },
 });
 

@@ -43,15 +43,15 @@ function Map(props: ConnectedComponentProps) {
 
   useEffect(() => {
     if (map && points) {
-      const markers: Marker<unknown>[] = points.map((point) => {
-        return leaflet
+      const markers: Marker<unknown>[] = points.map((point) =>
+        leaflet
           .marker({
             lat: point.location.latitude,
             lng: point.location.longitude,
           }, {
             icon: (activePlace === point.id)? currentMarkerIcon : defaultMarkerIcon,
-          });
-      });
+          }),
+      );
 
       markers.forEach((marker) => marker.addTo(map));
 

@@ -29,21 +29,31 @@ type ConnectedComponentProps = PropsFromRedux & PagePlaceInfoProps;
 function PlaceInfo(props: ConnectedComponentProps): JSX.Element {
   const {offers} = props;
   const {id} = useParams<{id: string}>();
-  const [offer, setOffer] = useState<Offer>();
+  const [offer, setOffer] = useState<Offer | undefined>(undefined);
   const [nearPoints, setNearPoints] = useState<Offers | null>(null);
 
   useEffect(() => {
-    setOffer(offers.find((offer) => offer.id === Number(id)));
+    setOffer(offers.find((place) => place.id === Number(id)));
+
+  }, [id]);
+
+  useEffect(() => {
+    if (!offer) {
+      return;
+    }
+
     const points: Points = [];
-    const nearPlaces: Offers = offers.filter((value) => Number(id) !== value.id);
+    const currentCity = offer.city.name;
+    const nearPlaces: Offers = offers.filter((place) => Number(id) !== place.id && currentCity === place.city.name);
+
     if (nearPlaces) {
-      nearPlaces.forEach((offer) => points.push({
-        id: offer.id,
-        location: offer.location,
+      nearPlaces.forEach((place) => points.push({
+        id: place.id,
+        location: place.location,
       }));
       setNearPoints(nearPlaces);
     }
-  }, [id]);
+  }, [offer]);
 
   if (!offer) {
     return (

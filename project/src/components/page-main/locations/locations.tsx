@@ -4,7 +4,7 @@ import {State} from '../../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
 import {Dispatch} from 'redux';
 import {Actions} from '../../../types/actions';
-import {selectCity} from '../../../store/action';
+import {setSelectCity} from '../../../store/action';
 
 type LocationsProps = {
   selectedCity: string;
@@ -16,7 +16,7 @@ const mapStateToProps = ({selectedCity}: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   onClickCity(city: string) {
-    dispatch(selectCity(city));
+    dispatch(setSelectCity(city));
   },
 });
 
