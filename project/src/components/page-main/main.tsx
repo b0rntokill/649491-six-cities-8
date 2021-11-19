@@ -4,15 +4,18 @@ import Places from '../places/places';
 import PlacesEmpty from '../places/places-empty';
 import SortingOptions from './sorting-options/sorting-options';
 import Locations from './locations/locations';
+import LoadingSpinner from '../loading-spinner/loading-spinner';
 import Map from '../map/map';
-import {Offer, Offers} from '../../types/offer';
+import {Offer} from '../../types/offer';
 import {Points, Location} from '../../types/map';
 import {State} from '../../types/state';
+import {getSortOffers} from '../../utils';
 import {DEFAULT_SORT_TYPE} from '../../const';
 
-const mapStateToProps = ({selectedCity, offers}: State) => ({
+const mapStateToProps = ({selectedCity, offers, isDataLoaded}: State) => ({
   offers,
   selectedCity,
+  isDataLoaded,
 });
 
 const connector = connect(mapStateToProps);
@@ -20,29 +23,15 @@ const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Main(props: PropsFromRedux): JSX.Element {
-  const {selectedCity, offers} = props;
+  const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
+  const {selectedCity, offers, isDataLoaded} = props;
   const [sortType, setSortType] = useState<string>(DEFAULT_SORT_TYPE);
 
   const updateSortType = (type: string): void => {
     setSortType(type);
   };
 
-  const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
-
   const selectedCityOffers = offers.filter((offer: Offer) => offer.city.name === selectedCity);
-
-  const getSortOffers = (type: string, places: Offers) => {
-    switch (type) {
-      case 'Price: low to high':
-        return places.slice().sort((a, b) => a.price - b.price);
-      case 'Price: high to low':
-        return places.slice().sort((a, b) => b.price - a.price);
-      case 'Top rated first':
-        return places.slice().sort((a, b) => Number(b.rating) -  Number(a.price));
-      default:
-        return places;
-    }
-  };
 
   const selectedSortOffers = getSortOffers(sortType, selectedCityOffers);
 
@@ -58,12 +47,32 @@ function Main(props: PropsFromRedux): JSX.Element {
     }));
   }
 
+  if (!isDataLoaded) {
+    return (
+      <main className={`page__main page__main--index ${selectedCityOffers? EMPTY_OFFERS_CLASS : ''}`}>
+        <h1 className="visually-hidden">Cities</h1>
+        <div className="tabs">
+          <Locations/>
+        </div>
+
+        <div className="cities">
+          <div className="cities__places-container container">
+
+            <LoadingSpinner/>
+
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={`page__main page__main--index ${selectedCityOffers? EMPTY_OFFERS_CLASS : ''}`}>
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
         <Locations/>
       </div>
+
       <div className="cities">
         <div className="cities__places-container container">
 
@@ -79,10 +88,12 @@ function Main(props: PropsFromRedux): JSX.Element {
               />
               : <PlacesEmpty/>}
           </section>
+
           <div className="cities__right-section">
             {city?
               <Map city={city} points={points} height={873}/> : null}
           </div>
+
         </div>
       </div>
     </main>

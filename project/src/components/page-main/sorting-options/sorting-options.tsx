@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {SORT_LIST} from '../../../const';
+import {SortList} from '../../../const';
 
 type SortingOptionsProps = {
   sortType: string;
@@ -8,6 +8,7 @@ type SortingOptionsProps = {
 
 function SortingOptions({sortType, updateSortType}: SortingOptionsProps): JSX.Element {
   const [isSortOpened, setIsSortOpened] = useState<boolean>(false);
+  const sortList = Object.values(SortList) as SortList[];
 
   return (
     <form className="places__sorting" action="#" method="get">
@@ -27,7 +28,7 @@ function SortingOptions({sortType, updateSortType}: SortingOptionsProps): JSX.El
           setIsSortOpened(false);
         }}
       >
-        {SORT_LIST.map((item: string) => (
+        {sortList.map((item: string) => (
           <li className={`places__option ${sortType === item? 'places__option--active' : ''}`}
             key={item}
             tabIndex={0}

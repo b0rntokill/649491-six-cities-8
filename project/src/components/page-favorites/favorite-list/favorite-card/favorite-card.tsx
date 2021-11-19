@@ -7,7 +7,7 @@ type FavoriteCardProps = {
 };
 
 function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
-  const {id, name, images, type, price, rating} = offer;
+  const {id, title, images, type, price, rating} = offer;
   const mainImage = images[0];
 
   return (
@@ -16,7 +16,7 @@ function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
         <Link
           to={`/offer/${id}`}
         >
-          <img className="place-card__image" src={mainImage} width="150" height="110" alt={name}/>
+          <img className="place-card__image" src={mainImage} width="150" height="110" alt={title}/>
         </Link>
       </div>
       <div className="favorites__card-info place-card__info">
@@ -42,7 +42,7 @@ function FavoriteCard({offer}: FavoriteCardProps): JSX.Element {
           <Link
             to={`/offer/${id}`}
           >
-            {name}
+            {title}
           </Link>
         </h2>
         <p className="place-card__type">{type}</p>

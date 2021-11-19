@@ -4,8 +4,13 @@ export type Review = {
   user: User,
   id: number,
   rating: number,
-  text: string,
+  comment: string,
   date: string,
 };
 
 export type Reviews = Review[];
+
+export type NewReview = {
+  rating: number,
+  comment: string,
+};

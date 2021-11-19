@@ -1,45 +1,83 @@
-import {Reviews, Review} from '../../types/reviews';
-import React from 'react';
+import {Reviews, NewReview} from '../../types/reviews';
+import React, {useEffect} from 'react';
 import {useState} from 'react';
 import ReviewsList from './reviews-list/reviews-list';
 import ReviewsForm from './reviews-form/reviews-form';
-import {DATE_LOCALES, DATE_OPTIONS} from '../../const';
+import {State} from '../../types/state';
+import {ThunkAppDispatch} from '../../types/api-actions';
+import {fetchReviewsAction, sendReviewAction} from '../../store/api-actions';
+import {connect, ConnectedProps} from 'react-redux';
+import LoadingSpinner from '../loading-spinner/loading-spinner';
+import {AuthorizationStatus} from '../../const';
 
 type ReviewsProps = {
-  reviews: Reviews;
+  reviewsId: number;
 };
 
-function ReviewsTemplate({reviews}: ReviewsProps): JSX.Element {
-  const [reviewsArr, setReviewsArr] = useState(reviews);
+const mapStateToProps = ({reviews, authorizationStatus}: State) => ({
+  reviews,
+  authorizationStatus,
+});
+
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchReviews(id: number) {
+    dispatch(fetchReviewsAction(id));
+  },
+  sendReview(id: number, comment: NewReview) {
+    dispatch(sendReviewAction(id, comment));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type ConnectedComponentProps = PropsFromRedux & ReviewsProps;
+
+function ReviewsTemplate(props: ConnectedComponentProps): JSX.Element {
+  const {reviewsId, reviews, authorizationStatus, fetchReviews, sendReview} = props;
+  const [reviewsArr, setReviewsArr] = useState<Reviews | null>(null);
+  const isAuthUser = (authorizationStatus === AuthorizationStatus.Auth);
+
+  useEffect(() => {
+    fetchReviews(reviewsId);
+  }, [reviewsId]);
+
+  useEffect(() => {
+    setReviewsArr(reviews);
+  }, [reviews]);
 
   function addReview(text: string, rating: number): void {
     const formatText = text.trim();
-    const newReview: Review = {
-      user: {
-        id: Date.now(),
-        name: 'Anonymous',
-        avatar: 'img/avatar.svg',
-        status: '',
-      },
-      id: Date.now(),
+    const newReview = {
+      comment: formatText,
       rating: rating,
-      text: formatText,
-      date: new Date().toLocaleString(DATE_LOCALES, DATE_OPTIONS),
     };
 
-    setReviewsArr((prevState: Reviews) => ([...prevState, newReview]));
+    sendReview(reviewsId, newReview);
+  }
+
+  if (reviewsArr) {
+    return (
+      <section className="property__reviews reviews">
+        <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsArr.length}</span></h2>
+
+        {reviewsArr.length === 0 && isAuthUser &&
+        <p className={'text-center'}>Your comment will be the first</p>}
+
+        <ReviewsList reviewsArr={reviewsArr}/>
+
+        {isAuthUser &&
+          <ReviewsForm addReview={addReview}/>}
+
+      </section>
+    );
   }
 
   return (
-    <section className="property__reviews reviews">
-      <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsArr.length}</span></h2>
-
-      <ReviewsList reviews={reviewsArr}/>
-
-      <ReviewsForm addReview={addReview}/>
-
-    </section>
+    <LoadingSpinner />
   );
+
 }
 
-export default ReviewsTemplate;
+export {ReviewsTemplate};
+export default connector(ReviewsTemplate);

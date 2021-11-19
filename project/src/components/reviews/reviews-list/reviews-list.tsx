@@ -3,13 +3,13 @@ import {Review, Reviews} from '../../../types/reviews';
 import ReviewItem from './review-item/rewiew-item';
 
 type ReviewsListProps = {
-  reviews: Reviews;
+  reviewsArr: Reviews | null;
 };
 
-function ReviewsList({reviews}: ReviewsListProps): JSX.Element {
+function ReviewsList({reviewsArr}: ReviewsListProps): JSX.Element {
   return (
     <ul className="reviews__list">
-      {reviews.map((review: Review) =>
+      {reviewsArr && reviewsArr.map((review: Review) =>
         <ReviewItem review={review} key={review.id}/>)}
     </ul>
   );
