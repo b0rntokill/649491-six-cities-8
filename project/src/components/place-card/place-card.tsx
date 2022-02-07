@@ -6,6 +6,7 @@ import {Offer} from '../../types/offer';
 import {State} from '../../types/state';
 import {Actions} from '../../types/actions';
 import {setActivePlace} from '../../store/action';
+import {getRatingToPercent} from '../../utils';
 
 type PagePlaceCardProps = {
   offer: Offer;
@@ -28,8 +29,8 @@ type ConnectedComponentProps = PropsFromRedux & PagePlaceCardProps;
 
 function PlaceCard(props: ConnectedComponentProps): JSX.Element {
   const {offer, activePlace, onMouseEnterPlace} = props;
-  const {id, name, images, isPremium, type, price, rating} = offer;
-  const mainImage = images[0];
+  const {id, title, previewImage, isPremium, type, price, rating} = offer;
+  const formatRating = getRatingToPercent(rating);
 
   return (
     <article className="cities__place-card place-card"
@@ -52,7 +53,7 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
         <Link
           to={`/offer/${id}`}
         >
-          <img className="place-card__image" src={mainImage} width="260" height="200" alt={name}/>
+          <img className="place-card__image" src={previewImage} width="260" height="200" alt={title}/>
         </Link>
       </div>
       <div className="place-card__info">
@@ -70,7 +71,7 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{width: `${rating}%`}}></span>
+            <span style={{width: `${formatRating}%`}}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
@@ -78,7 +79,7 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
           <Link
             to={`/offer/${id}`}
           >
-            {name}
+            {title}
           </Link>
         </h2>
         <p className="place-card__type">{type}</p>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {CITY_LIST} from '../../../const';
+import {CityList} from '../../../const';
 import {State} from '../../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
 import {Dispatch} from 'redux';
@@ -22,11 +22,12 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Locations(props: PropsFromRedux): JSX.Element {
   const {selectedCity, onClickCity} = props;
+  const cityList = Object.values(CityList) as CityList[];
 
   return (
     <section className="locations container">
       <ul className="locations__list tabs__list">
-        {CITY_LIST.map((city: string) => (
+        {cityList.map((city: string) => (
           <li className="locations__item" key={city}>
             <a className={`locations__item-link tabs__item ${selectedCity === city? 'tabs__item--active' : ''}`}
               href="#"

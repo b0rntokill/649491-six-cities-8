@@ -1,145 +1,164 @@
 import React, {useEffect, useState} from 'react';
+import {connect, ConnectedProps} from 'react-redux';
 import {useParams} from 'react-router';
 import PlaceGallery from './place-gallery/place-gallery';
 import PlaceConveniences from './place-conveniences/place-conveniences';
-import PlaceDescriptions from './place-description/place-description';
 import ReviewsTemplate from '../reviews/reviews';
 import Map from '../map/map';
 import Places from '../places/places';
-import {Offer, Offers} from '../../types/offer';
-import {Points} from '../../types/map';
-import {MAX_RATING} from '../../const';
 import Error404 from '../page-404/404';
+import LoadingSpinner from '../loading-spinner/loading-spinner';
+import {Offer, Offers} from '../../types/offer';
 import {State} from '../../types/state';
-import {connect, ConnectedProps} from 'react-redux';
+import {getRatingToPercent} from '../../utils';
+import {ThunkAppDispatch} from '../../types/api-actions';
+import {fetchNearbyPointsAction, fetchOfferAction} from '../../store/api-actions';
 
-const mapStateToProps = ({offers}: State) => ({
-  offers,
+const mapStateToProps = ({currentOffer, nearbyPoints, isDataLoaded}: State) => ({
+  currentOffer,
+  nearbyPoints,
+  isDataLoaded,
 });
 
-const connector = connect(mapStateToProps);
+const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
+  fetchOfferInfo(id: number) {
+    dispatch(fetchOfferAction(id));
+  },
+  fetchNearbyPoints(id: number) {
+    dispatch(fetchNearbyPointsAction(id));
+  },
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function PlaceInfo(props: PropsFromRedux): JSX.Element {
-  const {offers} = props;
+  const {currentOffer, nearbyPoints, fetchOfferInfo, fetchNearbyPoints} = props;
   const {id} = useParams<{id: string}>();
   const [offer, setOffer] = useState<Offer | undefined>(undefined);
-  const [nearPoints, setNearPoints] = useState<Offers | null>(null);
+  const [points, setPoints] = useState<Offers | null>(null);
 
   useEffect(() => {
-    setOffer(offers.find((place) => place.id === Number(id)));
+    fetchOfferInfo(Number(id));
   }, [id]);
 
   useEffect(() => {
-    if (!offer) {
-      return;
-    }
+    setOffer(currentOffer.data);
+  }, [currentOffer]);
 
-    const points: Points = [];
-    const currentCity = offer.city.name;
-    const nearPlaces: Offers = offers.filter((place) => Number(id) !== place.id && currentCity === place.city.name);
+  useEffect(() => {
+    fetchNearbyPoints(Number(id));
+  }, [id]);
 
-    if (nearPlaces) {
-      nearPlaces.forEach((place) => points.push({
-        id: place.id,
-        location: place.location,
-      }));
-      setNearPoints(nearPlaces);
-    }
-  }, [offer]);
+  useEffect(() => {
+    setPoints(nearbyPoints);
+  }, [nearbyPoints]);
 
-  if (!offer) {
+  if (!currentOffer.isFound) {
     return (
       <Error404/>
     );
   }
 
-  const {name, images, isPremium, type, price, rating, bedrooms, capacity, conveniences, owner, descriptions, reviews} = offer;
-  const city = offer.city.location;
-  const percentToRating = ((Number(rating) * MAX_RATING) / 100).toFixed(1);
+  if (offer) {
+    const {title, images, isPremium, type, price, rating, bedrooms, maxAdults, goods, host, description} = offer;
+    const city = offer.city.location;
+    const formatRating = getRatingToPercent(rating);
+
+    return (
+      <main className="page__main page__main--property">
+        <section className="property">
+
+          <PlaceGallery images={images}/>
+
+          <div className="property__container container">
+            <div className="property__wrapper">
+
+              {isPremium &&
+              <div className="property__mark">
+                <span>Premium</span>
+              </div>}
+
+              <div className="property__name-wrapper">
+                <h1 className="property__name">{title}</h1>
+                <button className={`property__bookmark-button button ${isPremium? 'property__bookmark-button--active' : ''}`} type="button">
+                  <svg className="property__bookmark-icon" width="31" height="33">
+                    <use xlinkHref="#icon-bookmark"></use>
+                  </svg>
+                  <span className="visually-hidden">To bookmarks</span>
+                </button>
+              </div>
+              <div className="property__rating rating">
+                <div className="property__stars rating__stars">
+                  <span style={{width: `${formatRating}%`}}></span>
+                  <span className="visually-hidden">Rating</span>
+                </div>
+                <span className="property__rating-value rating__value">{rating}</span>
+              </div>
+              <ul className="property__features">
+                <li className="property__feature property__feature--entire">{type}</li>
+                <li className="property__feature property__feature--bedrooms">{bedrooms} Bedrooms</li>
+                <li className="property__feature property__feature--adults">Max {maxAdults} adults</li>
+              </ul>
+              <div className="property__price">
+                <b className="property__price-value">&euro;{price}</b>
+                <span className="property__price-text">&nbsp;night</span>
+              </div>
+
+              <PlaceConveniences conveniences={goods}/>
+
+              <div className="property__host">
+                <h2 className="property__host-title">Meet the host</h2>
+                <div className="property__host-user user">
+                  <div className={`property__avatar-wrapper user__avatar-wrapper ${host.isPro? 'property__avatar-wrapper--pro' : ''}`}>
+                    <img className="property__avatar user__avatar" src={host.avatarUrl} width="74" height="74" alt="Host avatar"/>
+                  </div>
+                  <span className="property__user-name">{host.name}</span>
+
+                  {host.isPro &&
+                  <span className="property__user-status">
+                    {host.isPro}
+                  </span>}
+
+                </div>
+                <div className="property__description">
+                  <p className="property__text">{description}</p>
+                </div>
+              </div>
+
+              <ReviewsTemplate reviewsId={Number(id)}/>
+
+            </div>
+          </div>
+
+          {points &&
+          <section className="property__map map">
+            <Map city={city} points={points} height={579}/>
+          </section>}
+
+        </section>
+
+        <div className="container">
+          <h2 className="near-places__title">Other places in the neighbourhood</h2>
+
+          {points?
+            <Places
+              offers={points} pageClass={'near-places__list'}
+            /> :
+            <p className={'text-center font-20'}>Sorry! No near places to stay available</p>}
+
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="page__main page__main--property">
-      <section className="property">
-
-        <PlaceGallery images={images}/>
-
-        <div className="property__container container">
-          <div className="property__wrapper">
-
-            {isPremium &&
-            <div className="property__mark">
-              <span>Premium</span>
-            </div>}
-
-            <div className="property__name-wrapper">
-              <h1 className="property__name">{name}</h1>
-              <button className={`property__bookmark-button button ${isPremium? 'property__bookmark-button--active' : ''}`} type="button">
-                <svg className="property__bookmark-icon" width="31" height="33">
-                  <use xlinkHref="#icon-bookmark"></use>
-                </svg>
-                <span className="visually-hidden">To bookmarks</span>
-              </button>
-            </div>
-            <div className="property__rating rating">
-              <div className="property__stars rating__stars">
-                <span style={{width: `${rating}%`}}></span>
-                <span className="visually-hidden">Rating</span>
-              </div>
-              <span className="property__rating-value rating__value">{percentToRating}</span>
-            </div>
-            <ul className="property__features">
-              <li className="property__feature property__feature--entire">{type}</li>
-              <li className="property__feature property__feature--bedrooms">{bedrooms} Bedrooms</li>
-              <li className="property__feature property__feature--adults">Max {capacity} adults</li>
-            </ul>
-            <div className="property__price">
-              <b className="property__price-value">&euro;{price}</b>
-              <span className="property__price-text">&nbsp;night</span>
-            </div>
-
-            <PlaceConveniences conveniences={conveniences}/>
-
-            <div className="property__host">
-              <h2 className="property__host-title">Meet the host</h2>
-              <div className="property__host-user user">
-                <div className={`property__avatar-wrapper user__avatar-wrapper ${owner.status? 'property__avatar-wrapper--pro' : ''}`}>
-                  <img className="property__avatar user__avatar" src={owner.avatar} width="74" height="74" alt="Host avatar"/>
-                </div>
-                <span className="property__user-name">{`${owner.name} ${owner.surname ? owner.surname : ''}`}</span>
-
-                {owner.status &&
-                <span className="property__user-status">
-                  {owner.status}
-                </span>}
-
-              </div>
-
-              <PlaceDescriptions descriptions={descriptions}/>
-
-            </div>
-
-            <ReviewsTemplate reviews={reviews}/>
-
-          </div>
-        </div>
-        {nearPoints &&
-        <section className="property__map map">
-          <Map city={city} points={nearPoints} height={579}/>
-        </section>}
-      </section>
-
-      <div className="container">
-        <h2 className="near-places__title">Other places in the neighbourhood</h2>
-        {nearPoints?
-          <Places
-            offers={nearPoints} pageClass={'near-places__list'}
-          /> :
-          <p className={'text-center font-20'}>Sorry! No near places to stay available</p>}
-      </div>
+      <LoadingSpinner/>
     </main>
   );
+
 }
 
 export {PlaceInfo};
