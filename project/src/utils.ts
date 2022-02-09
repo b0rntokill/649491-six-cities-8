@@ -3,7 +3,7 @@ import {User} from './types/users';
 import {RATING_TO_PERCENT, SortList} from './const';
 import {Reviews} from './types/reviews';
 
-export const getSortOffers = (type: string, places: Offers) => {
+export const getSortOffers = (type: string, places: Offers): Offers => {
   switch (type) {
     case SortList.PriceLowToHigh:
       return places.slice().sort((a, b) => a.price - b.price);
@@ -16,9 +16,10 @@ export const getSortOffers = (type: string, places: Offers) => {
   }
 };
 
-export const getRatingToPercent = (rating: number | string) => Number(rating) * RATING_TO_PERCENT;
+export const getRatingToPercent = (rating: number | string): number => Number(rating) * RATING_TO_PERCENT;
 
-export const getBackendToFrontOffers = (arr: BackendOffers | Reviews) => {
+export const getBackendToFrontOffers = (arr: BackendOffers | Reviews): Record<string, unknown>[] => {
+  /* eslint-disable */
   const adapterArr = arr.map((offer) => {
     return Object.entries(offer).reduce<Record<string, unknown>>((acc, [key, value]) => {
       switch (key) {

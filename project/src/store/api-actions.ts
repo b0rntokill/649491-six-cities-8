@@ -44,6 +44,7 @@ export const fetchOfferAction = (id: number): ThunkActionResult =>
         data: undefined,
       };
       dispatch(getLoadOffer(adapterCurrentOffer as CurrentOffer));
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -57,6 +58,7 @@ export const fetchNearbyPointsAction = (id: number): ThunkActionResult =>
       dispatch(getLoadNearbyPoints(adapterArr as Offers));
     } catch (evt) {
       dispatch(getLoadNearbyPoints(null));
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -69,6 +71,7 @@ export const fetchReviewsAction = (id: number): ThunkActionResult =>
       const adapterArr = getBackendToFrontOffers(data);
       dispatch(getLoadReviews(adapterArr as Reviews));
     } catch (evt) {
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -82,6 +85,7 @@ export const sendReviewAction = (id: number, {comment, rating}: NewReview): Thun
       const adapterArr = getBackendToFrontOffers(data);
       dispatch(getLoadReviews(adapterArr as Reviews));
     } catch (evt) {
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -94,6 +98,7 @@ export const checkAuthAction = (): ThunkActionResult =>
       dispatch(requireAuthorization(AuthorizationStatus.Auth));
     } catch (evt) {
       toast.info(AUTH_FAIL_MESSAGE);
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -108,6 +113,7 @@ export const loginAction = ({login: email, password}: AuthData): ThunkActionResu
       dispatch(redirectToRoute(AppRoute.Main));
     } catch (evt) {
       toast.info(LOGIN_FAIL_MESSAGE);
+      /* eslint-disable */
       console.info(evt);
     }
   };
@@ -116,5 +122,5 @@ export const logoutAction = (): ThunkActionResult =>
   async (dispatch: ThunkAppDispatch, _getState, api) => {
     await api.delete(ApiRoute.Logout);
     dropToken();
-    dispatch(requireLogout());
+    dispatch(requireLogout(AuthorizationStatus.NoAuth));
   };

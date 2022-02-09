@@ -9,14 +9,16 @@ import {fetchReviewsAction, sendReviewAction} from '../../store/api-actions';
 import {connect, ConnectedProps} from 'react-redux';
 import LoadingSpinner from '../loading-spinner/loading-spinner';
 import {AuthorizationStatus} from '../../const';
+import { getReviews } from '../../store/app-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 type ReviewsProps = {
   reviewsId: number;
 };
 
-const mapStateToProps = ({reviews, authorizationStatus}: State) => ({
-  reviews,
-  authorizationStatus,
+const mapStateToProps = (state: State) => ({
+  reviews: getReviews(state),
+  authorizationStatus: getAuthorizationStatus(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
