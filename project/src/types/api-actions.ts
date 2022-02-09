@@ -1,3 +1,5 @@
+import { Action } from '@reduxjs/toolkit';
+
 import {
   ThunkAction,
   ThunkDispatch
@@ -8,7 +10,6 @@ import {
 } from 'axios';
 
 import {State} from '../types/state';
-import {Actions} from './actions';
 
-export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Actions>;
-export type ThunkAppDispatch = ThunkDispatch<State, AxiosInstance, Actions>;
+export type ThunkActionResult<R = Promise<void>> = ThunkAction<R, State, AxiosInstance, Action>;
+export type ThunkAppDispatch = ThunkDispatch<State, AxiosInstance, Action>;

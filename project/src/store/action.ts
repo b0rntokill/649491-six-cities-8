@@ -1,65 +1,52 @@
-import {ActionType} from '../types/actions';
-import {Offers, CurrentOffer} from '../types/offer';
-import {UserAuthInfo} from '../types/users';
-import {AppRoute, AuthorizationStatus} from '../const';
-import {Reviews, NewReview} from '../types/reviews';
+import { createAction } from '@reduxjs/toolkit';
+import { AppRoute, AuthorizationStatus } from '../const';
+import { ActionType } from '../types/actions';
+import { CurrentOffer, Offers } from '../types/offer';
+import { NewReview, Reviews } from '../types/reviews';
+import { ActivePlace, SelectedCity } from '../types/state';
+import { UserAuthInfo } from '../types/users';
 
-export const setSelectCity = (city: string) => ({
-  type: ActionType.SelectCity,
-  payload: city,
-} as const);
+export const setSelectCity = createAction<SelectedCity>(ActionType.SelectCity);
 
-export const setActivePlace = (id: number | null) => ({
-  type: ActionType.ActivePlace,
-  payload: id,
-} as const);
+export const setActivePlace = createAction<ActivePlace>(ActionType.ActivePlace);
 
-export const getLoadOffers = (offers: Offers) => ({
-  type: ActionType.LoadOffers,
-  payload: {
-    offers,
-    isDataLoaded: true,
-  },
-} as const);
+export const getLoadOffers = createAction(
+  ActionType.LoadOffers,
+  (offers: Offers) => ({
+    payload: {
+      offers,
+      isDataLoaded: true,
+    },
+  }),
+);
 
-export const getLoadOffer = (offer: CurrentOffer) => ({
-  type: ActionType.LoadOffer,
-  payload: offer,
-} as const);
+export const getLoadOffer = createAction<CurrentOffer>(ActionType.LoadOffer);
 
-export const getLoadNearbyPoints = (offers: Offers | null) => ({
-  type: ActionType.LoadNearbyPoints,
-  payload: offers,
-} as const);
+export const getLoadNearbyPoints = createAction<Offers | null>(ActionType.LoadNearbyPoints);
 
-export const getLoadReviews = (reviews: Reviews) => ({
-  type: ActionType.LoadReviews,
-  payload: reviews,
-} as const);
+export const getLoadReviews = createAction<Reviews>(ActionType.LoadReviews);
 
-export const sendNewReview = (review: NewReview) => ({
-  type: ActionType.SendReview,
-  payload: review,
-} as const);
+export const setNewReview = createAction<NewReview>(ActionType.NewReview);
 
-export const requireAuthorization = (authStatus: AuthorizationStatus) => ({
-  type: ActionType.RequireAuthorization,
-  payload: {
-    authStatus: authStatus,
-    isDataLoaded: true,
-  },
-} as const);
+export const requireAuthorization = createAction(
+  ActionType.RequireAuthorization,
+  (authStatus: AuthorizationStatus) => ({
+    payload: {
+      authStatus: authStatus,
+      isDataLoaded: true,
+    },
+  }),
+);
 
-export const requireLogout  = () => ({
-  type: ActionType.RequireLogout,
-} as const);
+export const requireLogout = createAction(
+  ActionType.RequireLogout,
+  (authStatus: AuthorizationStatus) => ({
+    payload: {
+      authStatus: authStatus,
+    },
+  }),
+);
 
-export const redirectToRoute = (url: AppRoute) => ({
-  type: ActionType.RedirectToRoute,
-  payload: url,
-} as const);
+export const redirectToRoute = createAction<AppRoute>(ActionType.RedirectToRoute);
 
-export const setUserAuthInfo = (userAuthInfo: UserAuthInfo) => ({
-  type: ActionType.UserAuthInfo,
-  payload: userAuthInfo,
-} as const);
+export const setUserAuthInfo = createAction<UserAuthInfo>(ActionType.UserAuthInfo);

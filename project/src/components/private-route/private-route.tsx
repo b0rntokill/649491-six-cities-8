@@ -4,6 +4,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import {State} from '../../types/state';
 import {History} from 'history';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 type RenderFuncProps = {
   history: History<unknown>;
@@ -14,8 +15,8 @@ type PrivateRouteProps = RouteProps & {
   authorizationStatus: AuthorizationStatus
 }
 
-const mapStateToProps = ({authorizationStatus}: State) => ({
-  authorizationStatus,
+const mapStateToProps = (state: State) => ({
+  authorizationStatus: getAuthorizationStatus(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -25,10 +26,7 @@ type ConnectedComponentProps = PropsFromRedux & PrivateRouteProps;
 
 function PrivateRoute(props: ConnectedComponentProps): JSX.Element {
   const {exact, path, render, authorizationStatus} = props;
-  // TODO всегда приходит UNKNOWN
-  // Ясно если переходить по ихменению ссылки в браузере, это вызывает перезагрузку страницы
-  // и следовательно ее инициализацию со статусом UNKNOWN
-  console.log(authorizationStatus);
+
   return (
     <Route
       exact={exact}

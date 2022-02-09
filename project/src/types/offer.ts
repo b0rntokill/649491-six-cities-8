@@ -1,6 +1,5 @@
-import {User} from './users';
-import {Reviews} from './reviews';
-import {City, Location} from './map';
+import { City, Location } from './map';
+import { User } from './users';
 
 export type Offer = {
   bedrooms: number,

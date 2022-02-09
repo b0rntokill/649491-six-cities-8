@@ -3,14 +3,14 @@ import {CityList} from '../../../const';
 import {State} from '../../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
 import {Dispatch} from 'redux';
-import {Actions} from '../../../types/actions';
 import {setSelectCity} from '../../../store/action';
+import { getSelectedCity } from '../../../store/app-process/selectors';
 
-const mapStateToProps = ({selectedCity}: State) => ({
-  selectedCity,
+const mapStateToProps = (state: State) => ({
+  selectedCity: getSelectedCity(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   onClickCity(city: string) {
     dispatch(setSelectCity(city));
   },

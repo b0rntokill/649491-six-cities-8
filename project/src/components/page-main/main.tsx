@@ -11,11 +11,13 @@ import {Points, Location} from '../../types/map';
 import {State} from '../../types/state';
 import {getSortOffers} from '../../utils';
 import {DEFAULT_SORT_TYPE} from '../../const';
+import { getIsDataLoaded, getOffers } from '../../store/app-data/selectors';
+import { getSelectedCity } from '../../store/app-process/selectors';
 
-const mapStateToProps = ({selectedCity, offers, isDataLoaded}: State) => ({
-  offers,
-  selectedCity,
-  isDataLoaded,
+const mapStateToProps = (state: State) => ({
+  offers: getOffers(state),
+  selectedCity: getSelectedCity(state),
+  isDataLoaded: getIsDataLoaded(state),
 });
 
 const connector = connect(mapStateToProps);

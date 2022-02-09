@@ -4,9 +4,10 @@ import Favorites from './favorites/favorites';
 import FavoritesEmpty from './favorites/favorites-empty';
 import {Offer} from '../../types/offer';
 import {State} from '../../types/state';
+import { getOffers } from '../../store/app-data/selectors';
 
-const mapStateToProps = ({offers}: State) => ({
-  offers,
+const mapStateToProps = (state: State) => ({
+  offers: getOffers(state),
 });
 
 const connector = connect(mapStateToProps);

@@ -1,23 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import {connect, ConnectedProps} from 'react-redux';
-import {useParams} from 'react-router';
-import PlaceGallery from './place-gallery/place-gallery';
-import PlaceConveniences from './place-conveniences/place-conveniences';
-import ReviewsTemplate from '../reviews/reviews';
-import Map from '../map/map';
-import Places from '../places/places';
-import Error404 from '../page-404/404';
+import React, { useEffect, useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { useParams } from 'react-router';
+import { fetchNearbyPointsAction, fetchOfferAction } from '../../store/api-actions';
+import { getCurrentOffer, getIsDataLoaded, getNearbyPoints } from '../../store/app-data/selectors';
+import { ThunkAppDispatch } from '../../types/api-actions';
+import { Offer, Offers } from '../../types/offer';
+import { State } from '../../types/state';
+import { getRatingToPercent } from '../../utils';
 import LoadingSpinner from '../loading-spinner/loading-spinner';
-import {Offer, Offers} from '../../types/offer';
-import {State} from '../../types/state';
-import {getRatingToPercent} from '../../utils';
-import {ThunkAppDispatch} from '../../types/api-actions';
-import {fetchNearbyPointsAction, fetchOfferAction} from '../../store/api-actions';
+import Map from '../map/map';
+import Error404 from '../page-404/404';
+import Places from '../places/places';
+import ReviewsTemplate from '../reviews/reviews';
+import PlaceConveniences from './place-conveniences/place-conveniences';
+import PlaceGallery from './place-gallery/place-gallery';
 
-const mapStateToProps = ({currentOffer, nearbyPoints, isDataLoaded}: State) => ({
-  currentOffer,
-  nearbyPoints,
-  isDataLoaded,
+const mapStateToProps = (state: State) => ({
+  currentOffer: getCurrentOffer(state),
+  nearbyPoints: getNearbyPoints(state),
+  isDataLoaded: getIsDataLoaded(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
@@ -161,5 +162,5 @@ function PlaceInfo(props: PropsFromRedux): JSX.Element {
 
 }
 
-export {PlaceInfo};
+export { PlaceInfo };
 export default connector(PlaceInfo);

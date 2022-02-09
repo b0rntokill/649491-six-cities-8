@@ -7,6 +7,7 @@ import leaflet, {Marker} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
 import {State} from '../../types/state';
+import { getActivePlace } from '../../store/app-process/selectors';
 
 type MapProps = {
   city: Location;
@@ -14,8 +15,8 @@ type MapProps = {
   height: number;
 };
 
-const mapStateToProps = ({activePlace}: State) => ({
-  activePlace,
+const mapStateToProps = (state: State) => ({
+  activePlace: getActivePlace(state),
 });
 
 const connector = connect(mapStateToProps);
@@ -23,7 +24,7 @@ const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 type ConnectedComponentProps = PropsFromRedux & MapProps;
 
-function Map(props: ConnectedComponentProps) {
+function Map(props: ConnectedComponentProps): JSX.Element {
   const {city, points, height, activePlace} = props;
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);

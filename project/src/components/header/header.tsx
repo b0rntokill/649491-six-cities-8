@@ -1,15 +1,16 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { AuthorizationStatus } from '../../const';
+import { logoutAction } from '../../store/api-actions';
+import { getAuthorizationStatus, getUserAuthInfo } from '../../store/user-process/selectors';
+import { ThunkAppDispatch } from '../../types/api-actions';
+import { State } from '../../types/state';
 import Logo from '../logo/logo';
-import {State} from '../../types/state';
-import {connect, ConnectedProps} from 'react-redux';
-import {AuthorizationStatus} from '../../const';
-import {ThunkAppDispatch} from '../../types/api-actions';
-import {logoutAction} from '../../store/api-actions';
 
-const mapStateToProps = ({authorizationStatus, userAuthInfo}: State) => ({
-  authorizationStatus,
-  userAuthInfo,
+const mapStateToProps = (state: State) => ({
+  authorizationStatus: getAuthorizationStatus(state),
+  userAuthInfo: getUserAuthInfo(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
@@ -26,47 +27,45 @@ function Header(props: PropsFromRedux): JSX.Element {
   const {authorizationStatus, userAuthInfo, onClick} = props;
   const className = 'header';
 
-  const renderUser = () => {
+  function renderUser() {
     return (
       <React.Fragment>
         <li className="header__nav-item user">
-        <a className="header__nav-link header__nav-link--profile">
-          <div className="header__avatar-wrapper user__avatar-wrapper">
-          </div>
-          <span className="header__user-name user__name">
-            {userAuthInfo && userAuthInfo.name}
-          </span>
-        </a>
-      </li>
-    
-      <li className="header__nav-item">
-        <a
-          className="header__nav-link"
-          href="#"
-          onClick={onClick}
-        >
-          <span className="header__signout">Sign out</span>
-        </a>
-      </li>
-    </React.Fragment>
+          <a className="header__nav-link header__nav-link--profile">
+            <div className="header__avatar-wrapper user__avatar-wrapper">
+            </div>
+            <span className="header__user-name user__name">
+              {userAuthInfo && userAuthInfo.name}
+            </span>
+          </a>
+        </li>
+
+        <li className="header__nav-item">
+          <a
+            className="header__nav-link"
+            href="#"
+            onClick={onClick}
+          >
+            <span className="header__signout">Sign out</span>
+          </a>
+        </li>
+      </React.Fragment>
     );
   }
 
-  const renderLogin = () => {
+  function renderLogin() {
     return (
-      <React.Fragment>
-        <li className="header__nav-item user">
-          <Link
-              className="header__nav-link header__nav-link--profile"
-              to={'/login'}
-            >
-              <div className="header__avatar-wrapper user__avatar-wrapper">
-              </div>
-              <span className="header__user-name user__name">Sign in</span>
-            </Link>
-        </li>
-      </React.Fragment>
-    )
+      <li className="header__nav-item user">
+        <Link
+          className="header__nav-link header__nav-link--profile"
+          to={'/login'}
+        >
+          <div className="header__avatar-wrapper user__avatar-wrapper">
+          </div>
+          <span className="header__user-name user__name">Sign in</span>
+        </Link>
+      </li>
+    );
   }
 
   return (
@@ -77,11 +76,11 @@ function Header(props: PropsFromRedux): JSX.Element {
             <Logo className={className}/>
           </div>
           <nav className="header__nav">
-          <ul className="header__nav-list">
-            {authorizationStatus === AuthorizationStatus.Auth
-              ? renderUser()
-              : renderLogin()}
-          </ul>
+            <ul className="header__nav-list">
+              {authorizationStatus === AuthorizationStatus.Auth
+                ? renderUser()
+                : renderLogin()}
+            </ul>
           </nav>
         </div>
       </div>
@@ -89,5 +88,5 @@ function Header(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export {Header};
+export { Header };
 export default connector(Header);

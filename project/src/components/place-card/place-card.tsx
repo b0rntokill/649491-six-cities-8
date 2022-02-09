@@ -1,22 +1,22 @@
 import React from 'react';
-import {Dispatch} from 'redux';
-import {connect, ConnectedProps} from 'react-redux';
-import {Link} from 'react-router-dom';
-import {Offer} from '../../types/offer';
-import {State} from '../../types/state';
-import {Actions} from '../../types/actions';
-import {setActivePlace} from '../../store/action';
-import {getRatingToPercent} from '../../utils';
+import { connect, ConnectedProps } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Dispatch } from 'redux';
+import { setActivePlace } from '../../store/action';
+import { getActivePlace } from '../../store/app-process/selectors';
+import { Offer } from '../../types/offer';
+import { State } from '../../types/state';
+import { getRatingToPercent } from '../../utils';
 
 type PagePlaceCardProps = {
   offer: Offer;
 };
 
-const mapStateToProps = ({activePlace}: State) => ({
-  activePlace,
+const mapStateToProps = (state: State) => ({
+  activePlace: getActivePlace(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   onMouseEnterPlace(id: number | null) {
     dispatch(setActivePlace(id));
   },
@@ -88,5 +88,5 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
   );
 }
 
-export {PlaceCard};
+export { PlaceCard };
 export default connector(PlaceCard);
