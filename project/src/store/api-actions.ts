@@ -89,7 +89,8 @@ export const sendReviewAction = (id: number, {comment, rating}: NewReview): Thun
 export const checkAuthAction = (): ThunkActionResult =>
   async (dispatch: ThunkAppDispatch, _getState, api) => {
     try {
-      await api.get(ApiRoute.Login);
+      const {data} = await api.get(ApiRoute.Login);
+      dispatch(setUserAuthInfo(data));
       dispatch(requireAuthorization(AuthorizationStatus.Auth));
     } catch (evt) {
       toast.info(AUTH_FAIL_MESSAGE);

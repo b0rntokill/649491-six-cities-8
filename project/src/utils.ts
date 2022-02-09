@@ -10,7 +10,7 @@ export const getSortOffers = (type: string, places: Offers) => {
     case SortList.PriceHighToLow:
       return places.slice().sort((a, b) => b.price - a.price);
     case SortList.TopRated:
-      return places.slice().sort((a, b) => Number(b.rating) -  Number(a.price));
+      return places.slice().sort((a, b) => Number(b.rating) -  Number(a.rating));
     default:
       return places.slice();
   }

@@ -25,7 +25,10 @@ type ConnectedComponentProps = PropsFromRedux & PrivateRouteProps;
 
 function PrivateRoute(props: ConnectedComponentProps): JSX.Element {
   const {exact, path, render, authorizationStatus} = props;
-
+  // TODO всегда приходит UNKNOWN
+  // Ясно если переходить по ихменению ссылки в браузере, это вызывает перезагрузку страницы
+  // и следовательно ее инициализацию со статусом UNKNOWN
+  console.log(authorizationStatus);
   return (
     <Route
       exact={exact}

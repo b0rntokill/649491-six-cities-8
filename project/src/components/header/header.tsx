@@ -26,6 +26,49 @@ function Header(props: PropsFromRedux): JSX.Element {
   const {authorizationStatus, userAuthInfo, onClick} = props;
   const className = 'header';
 
+  const renderUser = () => {
+    return (
+      <React.Fragment>
+        <li className="header__nav-item user">
+        <a className="header__nav-link header__nav-link--profile">
+          <div className="header__avatar-wrapper user__avatar-wrapper">
+          </div>
+          <span className="header__user-name user__name">
+            {userAuthInfo && userAuthInfo.name}
+          </span>
+        </a>
+      </li>
+    
+      <li className="header__nav-item">
+        <a
+          className="header__nav-link"
+          href="#"
+          onClick={onClick}
+        >
+          <span className="header__signout">Sign out</span>
+        </a>
+      </li>
+    </React.Fragment>
+    );
+  }
+
+  const renderLogin = () => {
+    return (
+      <React.Fragment>
+        <li className="header__nav-item user">
+          <Link
+              className="header__nav-link header__nav-link--profile"
+              to={'/login'}
+            >
+              <div className="header__avatar-wrapper user__avatar-wrapper">
+              </div>
+              <span className="header__user-name user__name">Sign in</span>
+            </Link>
+        </li>
+      </React.Fragment>
+    )
+  }
+
   return (
     <header className="header">
       <div className="container">
@@ -34,36 +77,11 @@ function Header(props: PropsFromRedux): JSX.Element {
             <Logo className={className}/>
           </div>
           <nav className="header__nav">
-            <ul className="header__nav-list">
-
-              <li className="header__nav-item user">
-                <Link
-                  className="header__nav-link header__nav-link--profile"
-                  to={'/login'}
-                >
-                  <div className="header__avatar-wrapper user__avatar-wrapper">
-                  </div>
-                  <span className="header__user-name user__name">
-                    {authorizationStatus === AuthorizationStatus.Auth && userAuthInfo
-                      ?
-                      userAuthInfo.name
-                      : 'Sign in'}
-                  </span>
-                </Link>
-              </li>
-
-              {authorizationStatus === AuthorizationStatus.Auth &&
-              <li className="header__nav-item">
-                <a
-                  className="header__nav-link"
-                  href="#"
-                  onClick={onClick}
-                >
-                  <span className="header__signout">Sign out</span>
-                </a>
-              </li>}
-
-            </ul>
+          <ul className="header__nav-list">
+            {authorizationStatus === AuthorizationStatus.Auth
+              ? renderUser()
+              : renderLogin()}
+          </ul>
           </nav>
         </div>
       </div>
