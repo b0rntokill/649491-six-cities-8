@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useParams } from 'react-router';
-import { fetchNearbyPointsAction, fetchOfferAction } from '../../store/api-actions';
+import { fetchNearbyOffersAction, fetchOfferAction } from '../../store/app-data/async-actions';
 import { getCurrentOffer, getIsDataLoaded, getNearbyPoints } from '../../store/app-data/selectors';
 import { ThunkAppDispatch } from '../../types/api-actions';
 import { Offer, Offers } from '../../types/offer';
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
     dispatch(fetchOfferAction(id));
   },
   fetchNearbyPoints(id: number) {
-    dispatch(fetchNearbyPointsAction(id));
+    dispatch(fetchNearbyOffersAction(id));
   },
 });
 

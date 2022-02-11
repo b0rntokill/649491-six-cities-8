@@ -1,14 +1,14 @@
-import React from 'react';
-import {connect, ConnectedProps} from 'react-redux';
-import {useState, FormEvent, ChangeEvent} from 'react';
-import {ThunkAppDispatch} from '../../types/api-actions';
-import {AuthData} from '../../types/auth-data';
-import {loginAction} from '../../store/api-actions';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { loginAction } from '../../store/user-process/async-actions';
+import { ThunkAppDispatch } from '../../types/api-actions';
+import { AuthData } from '../../types/auth-data';
 
 
 const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  onSubmit(authData: AuthData) {
-    dispatch(loginAction(authData));
+  async onSubmit(authData: AuthData) {
+    await dispatch(loginAction(authData));
   },
 });
 
@@ -17,6 +17,7 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function AuthScreen(props: PropsFromRedux): JSX.Element {
   const {onSubmit} = props;
+  const history = useHistory();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitStatus, setSubmitStatus] = useState(false);
@@ -38,7 +39,6 @@ function AuthScreen(props: PropsFromRedux): JSX.Element {
       setSubmitStatus(true);
       return;
     }
-
     setSubmitStatus(false);
   }
 
@@ -48,6 +48,7 @@ function AuthScreen(props: PropsFromRedux): JSX.Element {
       login: login,
       password: password,
     });
+    history.goBack();
     setLogin('');
     setPassword('');
   }
@@ -108,5 +109,5 @@ function AuthScreen(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export {AuthScreen};
+export { AuthScreen };
 export default connector(AuthScreen);
