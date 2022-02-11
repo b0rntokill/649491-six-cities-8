@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
-import { setActivePlace } from '../../store/action';
+import { setActivePlace } from '../../store/app-process/app-process';
 import { getActivePlace } from '../../store/app-process/selectors';
 import { Offer } from '../../types/offer';
 import { State } from '../../types/state';

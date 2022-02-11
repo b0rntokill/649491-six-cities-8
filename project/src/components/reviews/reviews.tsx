@@ -1,16 +1,15 @@
-import {Reviews, NewReview} from '../../types/reviews';
-import React, {useEffect} from 'react';
-import {useState} from 'react';
-import ReviewsList from './reviews-list/reviews-list';
-import ReviewsForm from './reviews-form/reviews-form';
-import {State} from '../../types/state';
-import {ThunkAppDispatch} from '../../types/api-actions';
-import {fetchReviewsAction, sendReviewAction} from '../../store/api-actions';
-import {connect, ConnectedProps} from 'react-redux';
-import LoadingSpinner from '../loading-spinner/loading-spinner';
-import {AuthorizationStatus} from '../../const';
+import React, { useEffect, useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { AuthorizationStatus } from '../../const';
+import { fetchReviewsAction, sendReviewAction } from '../../store/app-data/async-actions';
 import { getReviews } from '../../store/app-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { ThunkAppDispatch } from '../../types/api-actions';
+import { NewComment, NewReview, Reviews } from '../../types/reviews';
+import { State } from '../../types/state';
+import LoadingSpinner from '../loading-spinner/loading-spinner';
+import ReviewsForm from './reviews-form/reviews-form';
+import ReviewsList from './reviews-list/reviews-list';
 
 type ReviewsProps = {
   reviewsId: number;
@@ -25,8 +24,13 @@ const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
   fetchReviews(id: number) {
     dispatch(fetchReviewsAction(id));
   },
-  sendReview(id: number, comment: NewReview) {
-    dispatch(sendReviewAction(id, comment));
+  async sendReview(id: number, comment: NewComment) {
+    const review = {
+      id,
+      comment,
+    };
+    await dispatch(sendReviewAction(review as NewReview));
+    await dispatch(fetchReviewsAction(id));
   },
 });
 
@@ -81,5 +85,5 @@ function ReviewsTemplate(props: ConnectedComponentProps): JSX.Element {
 
 }
 
-export {ReviewsTemplate};
+export { ReviewsTemplate };
 export default connector(ReviewsTemplate);

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AuthorizationStatus } from '../../const';
-import { logoutAction } from '../../store/api-actions';
+import { logoutAction } from '../../store/user-process/async-actions';
 import { getAuthorizationStatus, getUserAuthInfo } from '../../store/user-process/selectors';
 import { ThunkAppDispatch } from '../../types/api-actions';
 import { State } from '../../types/state';
@@ -25,7 +25,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 
 function Header(props: PropsFromRedux): JSX.Element {
   const {authorizationStatus, userAuthInfo, onClick} = props;
-  const className = 'header';
 
   function renderUser() {
     return (
@@ -43,7 +42,6 @@ function Header(props: PropsFromRedux): JSX.Element {
         <li className="header__nav-item">
           <a
             className="header__nav-link"
-            href="#"
             onClick={onClick}
           >
             <span className="header__signout">Sign out</span>
@@ -73,7 +71,7 @@ function Header(props: PropsFromRedux): JSX.Element {
       <div className="container">
         <div className="header__wrapper">
           <div className="header__left">
-            <Logo className={className}/>
+            <Logo className="header"/>
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">

@@ -9,7 +9,7 @@ export enum NameSpace {
   app = 'APP'
 }
 
-export const rootReducer =combineReducers({
+export const rootReducer = combineReducers({
   [NameSpace.user]: userProcess,
   [NameSpace.app]: appProcess,
   [NameSpace.data]: appData,

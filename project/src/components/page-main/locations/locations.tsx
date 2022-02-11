@@ -3,8 +3,8 @@ import {CityList} from '../../../const';
 import {State} from '../../../types/state';
 import {connect, ConnectedProps} from 'react-redux';
 import {Dispatch} from 'redux';
-import {setSelectCity} from '../../../store/action';
 import { getSelectedCity } from '../../../store/app-process/selectors';
+import { setSelectCity } from '../../../store/app-process/app-process';
 
 const mapStateToProps = (state: State) => ({
   selectedCity: getSelectedCity(state),

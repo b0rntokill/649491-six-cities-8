@@ -1,19 +1,18 @@
+import { configureStore } from '@reduxjs/toolkit';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
-import {ToastContainer} from 'react-toastify';
+import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {createAPI} from './services/api';
-import {redirect} from './store/middlewares/redirect';
 import App from './components/app/app';
+import { ApiRoute, AuthorizationStatus } from './const';
+import { createAPI } from './services/api';
+import { fetchOffersAction } from './store/app-data/async-actions';
 import { rootReducer } from './store/root-reducer';
-import {requireAuthorization} from './store/action';
-import {fetchOffersActions, checkAuthAction} from './store/api-actions';
-import {ThunkAppDispatch} from './types/api-actions';
-import {AuthorizationStatus} from './const';
-import { configureStore } from '@reduxjs/toolkit';
+import { checkAuthAction } from './store/user-process/async-actions';
+import { requireAuthorization } from './store/user-process/user-process';
 
-const api = createAPI(
+export const api = createAPI(
   () => store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth)),
 );
 
@@ -24,11 +23,11 @@ const store = configureStore({
       thunk: {
         extraArgument: api,
       },
-    }).concat(redirect),
+    }),
 });
 
-(store.dispatch as ThunkAppDispatch)(checkAuthAction());
-(store.dispatch as ThunkAppDispatch)(fetchOffersActions());
+(store.dispatch(checkAuthAction(ApiRoute.Login)));
+(store.dispatch(fetchOffersAction(ApiRoute.Hotels)));
 
 ReactDOM.render(
   <React.StrictMode>

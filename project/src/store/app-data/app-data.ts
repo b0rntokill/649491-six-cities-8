@@ -1,6 +1,12 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { AppData } from '../../types/state';
-import { getLoadNearbyPoints, getLoadOffer, getLoadOffers, getLoadReviews } from '../action';
+import {
+  fetchNearbyOffersAction,
+  fetchOfferAction,
+  fetchOffersAction,
+  fetchReviewsAction,
+  sendReviewAction
+} from './async-actions';
 
 const initialState: AppData = {
   offers: [],
@@ -13,23 +19,31 @@ const initialState: AppData = {
   isDataLoaded: false,
 };
 
-const appData = createReducer(initialState, (builder) => {
-  builder
-    .addCase(getLoadOffers, (state, action) => {
-      const {offers, isDataLoaded} = action.payload;
-      state.offers = offers;
-      state.isDataLoaded = isDataLoaded;
-    })
-    .addCase(getLoadOffer, (state, action) => {
-      state.currentOffer = action.payload;
-    })
-    .addCase(getLoadReviews, (state, action) => {
-      state.reviews = action.payload;
-    })
-    .addCase(getLoadNearbyPoints, (state, action) => {
-      state.nearbyPoints = action.payload;
-    });
+const dataSlice = createSlice({
+  name: 'data',
+  initialState: initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchOffersAction.fulfilled, (state, action) => {
+        state.offers = action.payload;
+        state.isDataLoaded = true;
+      })
+      .addCase(fetchOfferAction.fulfilled, (state, action) => {
+        state.currentOffer = action.payload;
+      })
+      .addCase(fetchNearbyOffersAction.fulfilled, (state, action) => {
+        state.nearbyPoints = action.payload;
+      })
+      .addCase(fetchReviewsAction.fulfilled, (state, action) => {
+        state.reviews = action.payload;
+      })
+      .addCase(sendReviewAction.fulfilled, (state, action) => {
+        state.isDataLoaded = true;
+      });
+  },
 });
 
-export { appData };
+const {reducer} = dataSlice;
 
+export const appData = reducer;

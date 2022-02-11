@@ -1,7 +1,7 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { AuthorizationStatus } from '../../const';
 import { UserProcess } from '../../types/state';
-import { requireAuthorization, requireLogout, setUserAuthInfo } from '../action';
+import { checkAuthAction, loginAction, logoutAction } from './async-actions';
 
 const initialState: UserProcess = {
   userAuthInfo: null,
@@ -9,22 +9,38 @@ const initialState: UserProcess = {
   isDataLoaded: false,
 };
 
-
-const userProcess = createReducer(initialState, (builder) => {
-  builder
-    .addCase(requireAuthorization, (state, action) => {
-      const {authStatus, isDataLoaded} = action.payload;
-      state.authorizationStatus = authStatus;
-      state.isDataLoaded = isDataLoaded;
-    })
-    .addCase(requireLogout, (state, action) => {
-      const {authStatus} = action.payload;
-      state.authorizationStatus = authStatus;
-    })
-    .addCase(setUserAuthInfo, (state, action) => {
-      state.userAuthInfo = action.payload;
-    });
+const userProcessSlice = createSlice({
+  name: 'user',
+  initialState: initialState,
+  reducers: {
+    requireAuthorization: (state, action) => {
+      state.authorizationStatus = action.payload;
+      state.isDataLoaded = true;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkAuthAction.fulfilled, (state, action) => {
+        state.userAuthInfo = action.payload.data;
+        state.authorizationStatus = action.payload.status;
+      })
+      .addCase(logoutAction.fulfilled, (state, action) => {
+        if (action.payload === AuthorizationStatus.NoAuth) {
+          state.userAuthInfo = null;
+          state.authorizationStatus = action.payload;
+        }
+      })
+      .addCase(loginAction.fulfilled, (state, action) => {
+        state.userAuthInfo = action.payload.data;
+        state.authorizationStatus = action.payload.status;
+      });
+  },
 });
 
-export { userProcess };
+const {actions, reducer} = userProcessSlice;
 
+export const {
+  requireAuthorization,
+} = actions;
+
+export const userProcess = reducer;
