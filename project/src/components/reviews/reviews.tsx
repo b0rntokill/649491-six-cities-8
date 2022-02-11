@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AuthorizationStatus } from '../../const';
 import { fetchReviewsAction, sendReviewAction } from '../../store/app-data/async-actions';
 import { getReviews } from '../../store/app-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { ThunkAppDispatch } from '../../types/api-actions';
 import { NewComment, NewReview, Reviews } from '../../types/reviews';
-import { State } from '../../types/state';
 import LoadingSpinner from '../loading-spinner/loading-spinner';
 import ReviewsForm from './reviews-form/reviews-form';
 import ReviewsList from './reviews-list/reviews-list';
@@ -15,32 +13,25 @@ type ReviewsProps = {
   reviewsId: number;
 };
 
-const mapStateToProps = (state: State) => ({
-  reviews: getReviews(state),
-  authorizationStatus: getAuthorizationStatus(state),
-});
+function ReviewsTemplate(props: ReviewsProps): JSX.Element {
+  const {reviewsId} = props;
+  const reviews = useSelector(getReviews);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  fetchReviews(id: number) {
+  const dispatch = useDispatch();
+  const fetchReviews = (id: number): void => {
     dispatch(fetchReviewsAction(id));
-  },
-  async sendReview(id: number, comment: NewComment) {
+  };
+
+  const sendReview = async (id: number, comment: NewComment) => {
     const review = {
       id,
       comment,
     };
     await dispatch(sendReviewAction(review as NewReview));
     await dispatch(fetchReviewsAction(id));
-  },
-});
+  };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & ReviewsProps;
-
-function ReviewsTemplate(props: ConnectedComponentProps): JSX.Element {
-  const {reviewsId, reviews, authorizationStatus, fetchReviews, sendReview} = props;
   const [reviewsArr, setReviewsArr] = useState<Reviews | null>(null);
   const isAuthUser = (authorizationStatus === AuthorizationStatus.Auth);
 
@@ -85,5 +76,4 @@ function ReviewsTemplate(props: ConnectedComponentProps): JSX.Element {
 
 }
 
-export { ReviewsTemplate };
-export default connector(ReviewsTemplate);
+export default ReviewsTemplate;

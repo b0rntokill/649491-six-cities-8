@@ -1,30 +1,19 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { AuthorizationStatus } from '../../const';
 import { logoutAction } from '../../store/user-process/async-actions';
 import { getAuthorizationStatus, getUserAuthInfo } from '../../store/user-process/selectors';
-import { ThunkAppDispatch } from '../../types/api-actions';
-import { State } from '../../types/state';
 import Logo from '../logo/logo';
 
-const mapStateToProps = (state: State) => ({
-  authorizationStatus: getAuthorizationStatus(state),
-  userAuthInfo: getUserAuthInfo(state),
-});
+function Header(): JSX.Element {
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const userAuthInfo = useSelector(getUserAuthInfo);
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  onClick() {
+  const dispatch = useDispatch();
+  const onClick = (): void => {
     dispatch(logoutAction());
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Header(props: PropsFromRedux): JSX.Element {
-  const {authorizationStatus, userAuthInfo, onClick} = props;
+  };
 
   function renderUser() {
     return (
@@ -65,7 +54,7 @@ function Header(props: PropsFromRedux): JSX.Element {
       </li>
     );
   }
-
+  // TODO компонент для второй фазы
   return (
     <header className="header">
       <div className="container">
@@ -86,5 +75,4 @@ function Header(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export { Header };
-export default connector(Header);
+export default Header;

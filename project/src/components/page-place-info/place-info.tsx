@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { fetchNearbyOffersAction, fetchOfferAction } from '../../store/app-data/async-actions';
-import { getCurrentOffer, getIsDataLoaded, getNearbyPoints } from '../../store/app-data/selectors';
-import { ThunkAppDispatch } from '../../types/api-actions';
+import { getCurrentOffer, getNearbyPoints } from '../../store/app-data/selectors';
 import { Offer, Offers } from '../../types/offer';
-import { State } from '../../types/state';
 import { getRatingToPercent } from '../../utils';
 import LoadingSpinner from '../loading-spinner/loading-spinner';
 import Map from '../map/map';
@@ -15,30 +13,22 @@ import ReviewsTemplate from '../reviews/reviews';
 import PlaceConveniences from './place-conveniences/place-conveniences';
 import PlaceGallery from './place-gallery/place-gallery';
 
-const mapStateToProps = (state: State) => ({
-  currentOffer: getCurrentOffer(state),
-  nearbyPoints: getNearbyPoints(state),
-  isDataLoaded: getIsDataLoaded(state),
-});
+function PlaceInfo(): JSX.Element {
+  const currentOffer = useSelector(getCurrentOffer);
+  const nearbyPoints = useSelector(getNearbyPoints);
 
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  fetchOfferInfo(id: number) {
-    dispatch(fetchOfferAction(id));
-  },
-  fetchNearbyPoints(id: number) {
-    dispatch(fetchNearbyOffersAction(id));
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function PlaceInfo(props: PropsFromRedux): JSX.Element {
-  const {currentOffer, nearbyPoints, fetchOfferInfo, fetchNearbyPoints} = props;
   const {id} = useParams<{id: string}>();
   const [offer, setOffer] = useState<Offer | undefined>(undefined);
   const [points, setPoints] = useState<Offers | null>(null);
+
+  const dispatch = useDispatch();
+  const fetchOfferInfo = (curId: number): void => {
+    dispatch(fetchOfferAction(curId));
+  };
+
+  const fetchNearbyPoints = (curId: number): void => {
+    dispatch(fetchNearbyOffersAction(curId));
+  };
 
   useEffect(() => {
     fetchOfferInfo(Number(id));
@@ -66,7 +56,7 @@ function PlaceInfo(props: PropsFromRedux): JSX.Element {
     const {title, images, isPremium, type, price, rating, bedrooms, maxAdults, goods, host, description} = offer;
     const city = offer.city.location;
     const formatRating = getRatingToPercent(rating);
-
+    // TODO кандидат для второй фазы
     return (
       <main className="page__main page__main--property">
         <section className="property">
@@ -162,5 +152,4 @@ function PlaceInfo(props: PropsFromRedux): JSX.Element {
 
 }
 
-export { PlaceInfo };
-export default connector(PlaceInfo);
+export default PlaceInfo;
