@@ -1,57 +1,50 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { loginAction } from '../../store/user-process/async-actions';
-import { ThunkAppDispatch } from '../../types/api-actions';
 import { AuthData } from '../../types/auth-data';
 
-
-const mapDispatchToProps = (dispatch: ThunkAppDispatch) => ({
-  async onSubmit(authData: AuthData) {
-    await dispatch(loginAction(authData));
-  },
-});
-
-const connector = connect(null, mapDispatchToProps);
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function AuthScreen(props: PropsFromRedux): JSX.Element {
-  const {onSubmit} = props;
+function AuthScreen(): JSX.Element {
   const history = useHistory();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [submitStatus, setSubmitStatus] = useState(false);
 
-  function onLoginChange(evt: ChangeEvent<HTMLInputElement>): void {
+  const dispatch = useDispatch();
+  const onSubmit = async (authData: AuthData) => {
+    await dispatch(loginAction(authData));
+    history.goBack();
+  };
+
+  const onLoginChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     const value = evt.target.value;
     setLogin(value);
     checkFormForSubmit(value, password);
-  }
+  };
 
-  function onPasswordChange(evt: ChangeEvent<HTMLInputElement>): void {
+  const onPasswordChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     const value = evt.target.value;
     setPassword(value);
     checkFormForSubmit(login, value);
-  }
+  };
 
-  function checkFormForSubmit(log: string, pass: string): void {
+  const checkFormForSubmit = (log: string, pass: string): void => {
     if (log && pass) {
       setSubmitStatus(true);
       return;
     }
     setSubmitStatus(false);
-  }
+  };
 
-  function onFormSubmit(evt: FormEvent): void {
+  const onFormSubmit = (evt: FormEvent): void => {
     evt.preventDefault();
     onSubmit({
       login: login,
       password: password,
     });
-    history.goBack();
     setLogin('');
     setPassword('');
-  }
+  };
 
   return (
     <main className="page__main page__main--login">
@@ -109,5 +102,5 @@ function AuthScreen(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export { AuthScreen };
-export default connector(AuthScreen);
+export default AuthScreen;
+

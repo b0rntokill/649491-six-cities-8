@@ -1,27 +1,16 @@
 import React from 'react';
-import {CityList} from '../../../const';
-import {State} from '../../../types/state';
-import {connect, ConnectedProps} from 'react-redux';
-import {Dispatch} from 'redux';
-import { getSelectedCity } from '../../../store/app-process/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { CityList } from '../../../const';
 import { setSelectCity } from '../../../store/app-process/app-process';
+import { getSelectedCity } from '../../../store/app-process/selectors';
 
-const mapStateToProps = (state: State) => ({
-  selectedCity: getSelectedCity(state),
-});
+function Locations(): JSX.Element {
+  const selectedCity = useSelector(getSelectedCity);
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onClickCity(city: string) {
+  const dispatch = useDispatch();
+  const onClickCity = (city: string): void => {
     dispatch(setSelectCity(city));
-  },
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Locations(props: PropsFromRedux): JSX.Element {
-  const {selectedCity, onClickCity} = props;
+  };
   const cityList = Object.values(CityList) as CityList[];
 
   return (
@@ -50,5 +39,4 @@ function Locations(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export {Locations};
-export default connector(Locations);
+export default Locations;

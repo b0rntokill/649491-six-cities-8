@@ -1,13 +1,11 @@
-import React from 'react';
-import {useRef, useEffect} from 'react';
-import useMap from '../../hooks/use-map';
-import {connect, ConnectedProps} from 'react-redux';
-import {Location, Points} from '../../types/map';
-import leaflet, {Marker} from 'leaflet';
+import leaflet, { Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {URL_MARKER_DEFAULT, URL_MARKER_CURRENT} from '../../const';
-import {State} from '../../types/state';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../const';
+import useMap from '../../hooks/use-map';
 import { getActivePlace } from '../../store/app-process/selectors';
+import { Location, Points } from '../../types/map';
 
 type MapProps = {
   city: Location;
@@ -15,17 +13,10 @@ type MapProps = {
   height: number;
 };
 
-const mapStateToProps = (state: State) => ({
-  activePlace: getActivePlace(state),
-});
+function Map(props: MapProps): JSX.Element {
+  const {city, points, height} = props;
+  const activePlace = useSelector(getActivePlace);
 
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & MapProps;
-
-function Map(props: ConnectedComponentProps): JSX.Element {
-  const {city, points, height, activePlace} = props;
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
   const heightStr = `${height.toString()}px`;
@@ -74,6 +65,4 @@ function Map(props: ConnectedComponentProps): JSX.Element {
   );
 }
 
-export {Map};
-export default connector(Map);
-
+export default Map;

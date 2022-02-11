@@ -1,32 +1,24 @@
-import React, {useState} from 'react';
-import {connect, ConnectedProps} from 'react-redux';
-import Places from '../places/places';
-import PlacesEmpty from '../places/places-empty';
-import SortingOptions from './sorting-options/sorting-options';
-import Locations from './locations/locations';
-import LoadingSpinner from '../loading-spinner/loading-spinner';
-import Map from '../map/map';
-import {Offer} from '../../types/offer';
-import {Points, Location} from '../../types/map';
-import {State} from '../../types/state';
-import {getSortOffers} from '../../utils';
-import {DEFAULT_SORT_TYPE} from '../../const';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { DEFAULT_SORT_TYPE } from '../../const';
 import { getIsDataLoaded, getOffers } from '../../store/app-data/selectors';
 import { getSelectedCity } from '../../store/app-process/selectors';
+import { Location, Points } from '../../types/map';
+import { Offer } from '../../types/offer';
+import { getSortOffers } from '../../utils';
+import LoadingSpinner from '../loading-spinner/loading-spinner';
+import Map from '../map/map';
+import Places from '../places/places';
+import PlacesEmpty from '../places/places-empty';
+import Locations from './locations/locations';
+import SortingOptions from './sorting-options/sorting-options';
 
-const mapStateToProps = (state: State) => ({
-  offers: getOffers(state),
-  selectedCity: getSelectedCity(state),
-  isDataLoaded: getIsDataLoaded(state),
-});
+const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
 
-const connector = connect(mapStateToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-function Main(props: PropsFromRedux): JSX.Element {
-  const EMPTY_OFFERS_CLASS = 'page__main--index-empty';
-  const {selectedCity, offers, isDataLoaded} = props;
+function Main(): JSX.Element {
+  const offers = useSelector(getOffers);
+  const selectedCity = useSelector(getSelectedCity);
+  const isDataLoaded = useSelector(getIsDataLoaded);
   const [sortType, setSortType] = useState<string>(DEFAULT_SORT_TYPE);
 
   const updateSortType = (type: string): void => {
@@ -102,5 +94,4 @@ function Main(props: PropsFromRedux): JSX.Element {
   );
 }
 
-export {Main};
-export default connector(Main);
+export default Main;

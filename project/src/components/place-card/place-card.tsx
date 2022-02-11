@@ -1,34 +1,24 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Dispatch } from 'redux';
 import { setActivePlace } from '../../store/app-process/app-process';
 import { getActivePlace } from '../../store/app-process/selectors';
 import { Offer } from '../../types/offer';
-import { State } from '../../types/state';
 import { getRatingToPercent } from '../../utils';
 
 type PagePlaceCardProps = {
   offer: Offer;
 };
 
-const mapStateToProps = (state: State) => ({
-  activePlace: getActivePlace(state),
-});
+function PlaceCard(props: PagePlaceCardProps): JSX.Element {
+  const {offer} = props;
+  const activePlace = useSelector(getActivePlace);
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onMouseEnterPlace(id: number | null) {
+  const dispatch = useDispatch();
+  const onMouseEnterPlace = (id: number | null): void => {
     dispatch(setActivePlace(id));
-  },
-});
+  };
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-type ConnectedComponentProps = PropsFromRedux & PagePlaceCardProps;
-
-function PlaceCard(props: ConnectedComponentProps): JSX.Element {
-  const {offer, activePlace, onMouseEnterPlace} = props;
   const {id, title, previewImage, isPremium, type, price, rating} = offer;
   const formatRating = getRatingToPercent(rating);
 
@@ -88,5 +78,4 @@ function PlaceCard(props: ConnectedComponentProps): JSX.Element {
   );
 }
 
-export { PlaceCard };
-export default connector(PlaceCard);
+export default PlaceCard;
