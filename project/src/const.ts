@@ -3,6 +3,7 @@ export const DATE_OPTIONS: Intl.DateTimeFormatOptions = {year: 'numeric', month:
 export const URL_MARKER_DEFAULT = 'img/pin.svg';
 export const URL_MARKER_CURRENT = 'img/pin-active.svg';
 export const MIN_CHARACTERS_REVIEW = 50;
+export const RATING_ARR = [5, 4, 3, 2, 1];
 export const MIN_RATING_REVIEW = 1;
 export const RATING_TO_PERCENT = 20;
 

@@ -26,7 +26,6 @@ function Main(): JSX.Element {
   };
 
   const selectedCityOffers = offers.filter((offer: Offer) => offer.city.name === selectedCity);
-
   const selectedSortOffers = getSortOffers(sortType, selectedCityOffers);
 
   let city: Location | null = null;
@@ -48,12 +47,9 @@ function Main(): JSX.Element {
         <div className="tabs">
           <Locations/>
         </div>
-
         <div className="cities">
           <div className="cities__places-container container">
-
             <LoadingSpinner/>
-
           </div>
         </div>
       </main>
@@ -66,10 +62,8 @@ function Main(): JSX.Element {
       <div className="tabs">
         <Locations/>
       </div>
-
       <div className="cities">
         <div className="cities__places-container container">
-
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
             <b className="places__found">{selectedCityOffers.length} places to stay in {selectedCity}</b>
@@ -87,7 +81,6 @@ function Main(): JSX.Element {
             {city?
               <Map city={city} points={points} height={873}/> : null}
           </div>
-
         </div>
       </div>
     </main>

@@ -10,8 +10,8 @@ type PagePlaceCardProps = {
   offer: Offer;
 };
 
-function PlaceCard(props: PagePlaceCardProps): JSX.Element {
-  const {offer} = props;
+function PlaceCard({offer}: PagePlaceCardProps): JSX.Element {
+  const {id, title, previewImage, isPremium, type, price, rating} = offer;
   const activePlace = useSelector(getActivePlace);
 
   const dispatch = useDispatch();
@@ -19,7 +19,6 @@ function PlaceCard(props: PagePlaceCardProps): JSX.Element {
     dispatch(setActivePlace(id));
   };
 
-  const {id, title, previewImage, isPremium, type, price, rating} = offer;
   const formatRating = getRatingToPercent(rating);
 
   return (

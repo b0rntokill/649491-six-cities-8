@@ -8,7 +8,7 @@ function AuthScreen(): JSX.Element {
   const history = useHistory();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [submitStatus, setSubmitStatus] = useState(false);
+  const isSubmitStatus = login && password;
 
   const dispatch = useDispatch();
   const onSubmit = async (authData: AuthData) => {
@@ -19,21 +19,11 @@ function AuthScreen(): JSX.Element {
   const onLoginChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     const value = evt.target.value;
     setLogin(value);
-    checkFormForSubmit(value, password);
   };
 
   const onPasswordChange = (evt: ChangeEvent<HTMLInputElement>): void => {
     const value = evt.target.value;
     setPassword(value);
-    checkFormForSubmit(login, value);
-  };
-
-  const checkFormForSubmit = (log: string, pass: string): void => {
-    if (log && pass) {
-      setSubmitStatus(true);
-      return;
-    }
-    setSubmitStatus(false);
   };
 
   const onFormSubmit = (evt: FormEvent): void => {
@@ -51,7 +41,6 @@ function AuthScreen(): JSX.Element {
       <div className="page__login-container container">
         <section className="login">
           <h1 className="login__title">Sign in</h1>
-
           <form
             className="login__form form"
             action="#"
@@ -83,12 +72,11 @@ function AuthScreen(): JSX.Element {
             <button
               className="login__submit form__submit button"
               type="submit"
-              disabled={!submitStatus}
+              disabled={!isSubmitStatus}
             >
               Sign in
             </button>
           </form>
-
         </section>
         <section className="locations locations--login locations--current">
           <div className="locations__item">
