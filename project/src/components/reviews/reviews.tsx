@@ -1,79 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AuthorizationStatus } from '../../const';
 import { fetchReviewsAction, sendReviewAction } from '../../store/app-data/async-actions';
 import { getReviews } from '../../store/app-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { NewComment, NewReview, Reviews } from '../../types/reviews';
+import { NewReview } from '../../types/reviews';
 import LoadingSpinner from '../loading-spinner/loading-spinner';
 import ReviewsForm from './reviews-form/reviews-form';
 import ReviewsList from './reviews-list/reviews-list';
 
 type ReviewsProps = {
-  reviewsId: number;
+  id: number;
 };
 
-function ReviewsTemplate(props: ReviewsProps): JSX.Element {
-  const {reviewsId} = props;
+function ReviewsTemplate({id}: ReviewsProps): JSX.Element {
   const reviews = useSelector(getReviews);
   const authorizationStatus = useSelector(getAuthorizationStatus);
-
-  const dispatch = useDispatch();
-  const fetchReviews = (id: number): void => {
-    dispatch(fetchReviewsAction(id));
-  };
-
-  const sendReview = async (id: number, comment: NewComment) => {
-    const review = {
-      id,
-      comment,
-    };
-    await dispatch(sendReviewAction(review as NewReview));
-    await dispatch(fetchReviewsAction(id));
-  };
-
-  const [reviewsArr, setReviewsArr] = useState<Reviews | null>(null);
   const isAuthUser = (authorizationStatus === AuthorizationStatus.Auth);
 
-  useEffect(() => {
-    fetchReviews(reviewsId);
-  }, [reviewsId]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setReviewsArr(reviews);
-  }, [reviews]);
+    dispatch(fetchReviewsAction(id));
+  }, [id]);
 
-  function addReview(text: string, rating: number): void {
+  const onSubmitReview = async (text: string, rating: number) => {
     const formatText = text.trim();
-    const newReview = {
-      comment: formatText,
-      rating: rating,
+
+    const review: NewReview = {
+      id: id,
+      comment: {
+        comment: formatText,
+        rating: rating,
+      },
     };
 
-    sendReview(reviewsId, newReview);
+    await dispatch(sendReviewAction(review));
+    await dispatch(fetchReviewsAction(id));
   }
 
-  if (reviewsArr) {
+  if (!reviews) {
     return (
-      <section className="property__reviews reviews">
-        <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviewsArr.length}</span></h2>
-
-        {reviewsArr.length === 0 && isAuthUser &&
-        <p className={'text-center'}>Your comment will be the first</p>}
-
-        <ReviewsList reviewsArr={reviewsArr}/>
-
-        {isAuthUser &&
-          <ReviewsForm addReview={addReview}/>}
-
-      </section>
+      <LoadingSpinner />
     );
   }
 
-  return (
-    <LoadingSpinner />
-  );
+  const isReviewHide = (reviews.length === 0 && isAuthUser);
 
+  return (
+    <section className="property__reviews reviews">
+      <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
+
+      {!isReviewHide &&
+      <p className={'text-center'}>Your comment will be the first</p>}
+
+      <ReviewsList reviewsArr={reviews}/>
+
+      {isAuthUser &&
+      <ReviewsForm onSubmitReview={onSubmitReview}/>}
+    </section>
+  );
 }
 
 export default ReviewsTemplate;

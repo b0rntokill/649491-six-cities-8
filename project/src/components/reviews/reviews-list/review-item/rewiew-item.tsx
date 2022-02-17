@@ -10,6 +10,7 @@ type ReviewItemProps = {
 function ReviewItem({review}: ReviewItemProps): JSX.Element {
   const {user, rating, comment, date} = review;
   const formatRating = getRatingToPercent(rating);
+  const formatDate = new Date(date).toLocaleString(DATE_LOCALES, DATE_OPTIONS);
 
   return (
     <li className="reviews__item">
@@ -27,10 +28,7 @@ function ReviewItem({review}: ReviewItemProps): JSX.Element {
           </div>
         </div>
         <p className="reviews__text">{comment}</p>
-        <time className="reviews__time" dateTime={date}>{
-          new Date(date).toLocaleString(DATE_LOCALES, DATE_OPTIONS)
-        }
-        </time>
+        <time className="reviews__time" dateTime={date}>{formatDate}</time>
       </div>
     </li>
   );

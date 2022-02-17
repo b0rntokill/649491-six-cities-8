@@ -1,43 +1,30 @@
-import React from 'react';
-import {useState, FormEvent, ChangeEvent} from 'react';
-import {MIN_RATING_REVIEW, MIN_CHARACTERS_REVIEW} from '../../../const';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { MIN_CHARACTERS_REVIEW, MIN_RATING_REVIEW } from '../../../const';
+import RatingList from './rating-list';
 
 type ReviewsListProps = {
-  addReview: (text: string, rating: number) => void;
+  onSubmitReview: (text: string, rating: number) => void;
 };
 
-function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
-  const REPLACE_WHITESPACE = /\s+/g;
+const REPLACE_WHITESPACE = /\s+/g;
 
+function ReviewsForm({onSubmitReview}: ReviewsListProps): JSX.Element {
   const [text, setText] = useState('');
   const [rating, setRating] = useState(0);
-  const [submitStatus, setSubmitStatus] = useState(false);
+  const isSubmitStatus = text.length >= MIN_CHARACTERS_REVIEW && rating >= MIN_RATING_REVIEW;
 
-  function onTextChange(evt: ChangeEvent<HTMLTextAreaElement>): void {
+  const onTextChange = (evt: ChangeEvent<HTMLTextAreaElement>): void => {
     const value = (evt.target.value).replace(REPLACE_WHITESPACE, ' ');
     setText(value);
-    checkFormForSubmit(value, rating);
   }
 
-  function onRatingChange(evt: ChangeEvent<HTMLInputElement>): void {
-    const value = Number(evt.target.value);
-    setRating(value);
-    checkFormForSubmit(text, value);
+  const onRatingChange = (rating: number): void => {
+    setRating(rating);
   }
 
-  function checkFormForSubmit(txt: string, rat: number): void {
-    const charactersCount = (txt.trim().replace(/\s+/g, '')).length;
-
-    if (charactersCount >= MIN_CHARACTERS_REVIEW && rat >= MIN_RATING_REVIEW) {
-      setSubmitStatus(true);
-      return;
-    }
-    setSubmitStatus(false);
-  }
-
-  function onFormSubmit(evt: FormEvent): void {
+  const onFormSubmit = (evt: FormEvent): void => {
     evt.preventDefault();
-    addReview(text, rating);
+    onSubmitReview(text, rating);
     setText('');
     setRating(0);
   }
@@ -50,57 +37,9 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
       onSubmit={onFormSubmit}
     >
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
-      <div className="reviews__rating-form form__rating">
-        <input className="form__rating-input visually-hidden" name="rating" value="5" id="5-stars" type="radio"
-          onChange={onRatingChange}
-          checked={rating === 5}
-        />
-        <label htmlFor="5-stars" className="reviews__rating-label form__rating-label" title="perfect">
-          <svg className="form__star-image" width="37" height="33">
-            <use xlinkHref="#icon-star"></use>
-          </svg>
-        </label>
 
-        <input className="form__rating-input visually-hidden" name="rating" value="4" id="4-stars" type="radio"
-          onChange={onRatingChange}
-          checked={rating === 4}
-        />
-        <label htmlFor="4-stars" className="reviews__rating-label form__rating-label" title="good">
-          <svg className="form__star-image" width="37" height="33">
-            <use xlinkHref="#icon-star"></use>
-          </svg>
-        </label>
+      <RatingList curRating={rating} onRatingChange={onRatingChange}/>
 
-        <input className="form__rating-input visually-hidden" name="rating" value="3" id="3-stars" type="radio"
-          onChange={onRatingChange}
-          checked={rating === 3}
-        />
-        <label htmlFor="3-stars" className="reviews__rating-label form__rating-label" title="not bad">
-          <svg className="form__star-image" width="37" height="33">
-            <use xlinkHref="#icon-star"></use>
-          </svg>
-        </label>
-
-        <input className="form__rating-input visually-hidden" name="rating" value="2" id="2-stars" type="radio"
-          onChange={onRatingChange}
-          checked={rating === 2}
-        />
-        <label htmlFor="2-stars" className="reviews__rating-label form__rating-label" title="badly">
-          <svg className="form__star-image" width="37" height="33">
-            <use xlinkHref="#icon-star"></use>
-          </svg>
-        </label>
-
-        <input className="form__rating-input visually-hidden" name="rating" value="1" id="1-star" type="radio"
-          onChange={onRatingChange}
-          checked={rating === 1}
-        />
-        <label htmlFor="1-star" className="reviews__rating-label form__rating-label" title="terribly">
-          <svg className="form__star-image" width="37" height="33">
-            <use xlinkHref="#icon-star"></use>
-          </svg>
-        </label>
-      </div>
       <textarea className="reviews__textarea form__textarea"
         id="review"
         name="review"
@@ -109,13 +48,14 @@ function ReviewsForm({addReview}: ReviewsListProps): JSX.Element {
         onChange={onTextChange}
       >
       </textarea>
+
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe
           your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
         <button className="reviews__submit form__submit button" type="submit"
-          disabled={!submitStatus}
+          disabled={!isSubmitStatus}
         >
           Submit
         </button>
